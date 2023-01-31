@@ -90,7 +90,7 @@ gem 'bootstrap-table-rails', '~> 1.13', '>= 1.13.4'
 
 gem 'whenever', '~> 1.0'
 
-# gem 'net-sftp', '~> 2.1.3.rc3'
+gem 'net-sftp', '~> 2.1.3.rc3'
 
 ########Oracle##############
 # gem 'ruby-oci8'
