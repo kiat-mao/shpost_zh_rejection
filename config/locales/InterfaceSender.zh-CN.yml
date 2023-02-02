@@ -1,0 +1,56 @@
+zh-CN:
+  InterfaceSender:
+    # example_name:
+    #   url: 
+    #   interface_type: 'http'
+    #   http_type: 'post'
+    #   callback_class:
+    #   callback_method:
+    #   max_times: 5 #default_times: 10
+    #   interval: 300 #default_interval: 600
+    # ywtb_express:
+    #   # for test
+    #   url: 'http://117.184.226.70:8022/ac-product-api/uapply/saveExpress'
+    #   # for production
+    #   # url: 'http://ywtb.sh.gov.cn:18018/ac-product-api/uapply/saveExpress'
+    #   interface_type: 'json'
+    #   http_type: 'post'
+    #   callback_class: 'YwtbInterface'
+    #   callback_method: 'do_response'
+    #   header: "{\"Content-Type\":\"application/json\"}"
+    #   # object_class: 'Keyclientorder'
+    #   max_times: 5 #default_times: 10
+    #   interval: 300 #default_interval: 600
+    xyd_order_create:
+      # url: ''
+      interface_type: 'json'
+      http_type: 'post'
+      callback_class: 'XydInterfaceSender'
+      callback_method: 'order_create_callback_method'
+      header: "{\"Content-Type\":\"application/json\"}"
+      parent_class: 'Package'
+      # object_class: 'Keyclientorder'
+      max_times: 1 #default_times: 10
+      interval: 1000 #default_interval: 600
+    # address parsing
+    xyd_address_parsing:
+      # url: ''
+      interface_type: 'json'
+      http_type: 'post'
+      callback_class: 'XydInterfaceSender'
+      callback_method: 'address_parsing_callback_method'
+      header: "{\"Content-Type\":\"application/json\"}"
+      parent_class: 'Order'
+      # object_class: 'Keyclientorder'
+      max_times: 1 #default_times: 10
+      interval: 1000 #default_interval: 600
+    # waybill_query:
+    #   #production
+    #   url: 'http://172.16.205.114:3000/shpost_package/standard_interface/waybill_query_in_local'
+    #   #development
+    #   # url: 'http://localhost:3000/shpost_package/standard_interface/waybill_query_in_local'
+    #   interface_type: 'http'
+    #   http_type: 'post'
+    #   callback_class: 'WaybillSender'
+    #   callback_method: 'waybill_callback'
+    #   parent_class: 'Package'
