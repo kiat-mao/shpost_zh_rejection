@@ -10,7 +10,74 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_01_072038) do
+ActiveRecord::Schema.define(version: 2023_02_01_084358) do
+
+  create_table "batches", force: :cascade do |t|
+    t.string "name"
+    t.string "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "expresses", force: :cascade do |t|
+    t.string "express_no"
+    t.datetime "sacaned_at"
+    t.string "sender_province"
+    t.string "sender_city"
+    t.string "sender_district"
+    t.string "sender_addr"
+    t.string "sender_name"
+    t.string "sender_phone"
+    t.string "receiver_province"
+    t.string "receiver_city"
+    t.string "receiver_district"
+    t.string "receiver_postcode"
+    t.string "receiver_addr"
+    t.string "receiver_name"
+    t.string "receiver_phone"
+    t.string "status"
+    t.string "new_express_no"
+    t.string "route_code"
+    t.boolean "anomaly", default: false
+    t.string "anomaly_desc"
+    t.boolean "removed", default: false
+    t.string "deal_require"
+    t.string "deal_result"
+    t.string "deal_desc"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["express_no"], name: "index_expresses_on_express_no"
+    t.index ["new_express_no"], name: "index_expresses_on_new_express_no"
+  end
+
+  create_table "interface_senders", force: :cascade do |t|
+    t.string "url"
+    t.string "host"
+    t.string "port"
+    t.string "interface_type"
+    t.string "http_type"
+    t.string "callback_class"
+    t.string "callback_method"
+    t.text "callback_params"
+    t.string "status"
+    t.integer "send_times"
+    t.datetime "next_time"
+    t.text "header"
+    t.text "body"
+    t.datetime "last_time"
+    t.text "last_response"
+    t.text "last_header"
+    t.string "interface_code"
+    t.integer "max_times"
+    t.integer "interval"
+    t.text "error_msg"
+    t.string "parent_class"
+    t.integer "parent_id"
+    t.integer "unit_id"
+    t.integer "business_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "roles", force: :cascade do |t|
     t.integer "user_id"
