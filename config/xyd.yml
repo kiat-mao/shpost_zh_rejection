@@ -12,8 +12,9 @@ development:
   logistics_provider: B
   ecommerce_no: HNHCYY
   inner_channel: "0"
-  sy_sender_no:
-  gy_sender_no:
+  sender_no: "1030001504969"
+  # sy_sender_no:
+  # gy_sender_no:
   base_product_no_1: "1" #寄付
   base_product_no_3: "3" #到付
   payment_mode_2: "2"
@@ -33,8 +34,9 @@ test:
   logistics_provider: B
   ecommerce_no: HNHCYY
   inner_channel: "0"
-  sy_sender_no:
-  gy_sender_no:
+  sender_no: "1030001504969"
+  # sy_sender_no:
+  # gy_sender_no:
   base_product_no_1: "1" #寄付
   base_product_no_3: "3" #到付
   payment_mode_2: "2"
