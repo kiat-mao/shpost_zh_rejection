@@ -1,0 +1,13 @@
+default: &default
+  timeout: 5000
+
+development:
+  <<: *default
+  ftp_ip:
+  username:
+  password:
+test:
+  <<: *default
+
+production:
+  <<: *default
