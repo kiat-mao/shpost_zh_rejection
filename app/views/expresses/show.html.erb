@@ -1,0 +1,26 @@
+<%- model_class = Express -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:express_no) %>:</strong></dt>
+  <dd><%= @express.express_no %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:receiver_province) %>:</strong></dt>
+  <dd><%= @express.receiver_province %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:receiver_city) %>:</strong></dt>
+  <dd><%= @express.receiver_city %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:receiver_district) %>:</strong></dt>
+  <dd><%= @express.receiver_district %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:receiver_addr) %>:</strong></dt>
+  <dd><%= @express.receiver_addr %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:receiver_name) %>:</strong></dt>
+  <dd><%= @express.receiver_name %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:receiver_phone) %>:</strong></dt>
+  <dd><%= @express.receiver_phone %></dd>
+</dl>
+
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_express_path(@express), :class => 'btn btn-default' %>
+<%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+            (params['referer'].blank? ? request.referer : params['referer']), :class => 'btn btn-default' %>

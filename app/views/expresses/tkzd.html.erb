@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<%= stylesheet_link_tag "application", :media => "all" %>
+      <%= javascript_include_tag "application" %>
+
+<object id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>
+  <embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0 pluginspage="install_lodop.exe"></embed>
+</object>
+
+  <script language="javascript" type="text/javascript">
+  function tkzd_preview() {
+    LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));
+    if(LODOP == undefined){
+        window.open("CLodop_Setup_for_Win64NT.exe");
+    }
+    if(!LODOP.hasOwnProperty('PRINT') && (LODOP.VERSION == undefined)){
+        window.open("install_lodop32.exe");
+    }
+    LODOP.SET_LICENSES("上海市邮政公司信息技术局","452677782688188907989821905623","","");
+    <% @result.sort_by{|x| x.express_no.upcase}.each do |express| %>
+    LODOP.PRINT_INIT("打印特快专递单");
+    LODOP.SET_PRINT_PAGESIZE(1,750,1300,"tkzd");
+    LODOP.ADD_PRINT_LINE("2mm","2mm","2mm","74mm",2,1);
+    
+    LODOP.ADD_PRINT_TEXT("2.8mm","24mm","30mm","6.61mm","特快专递");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("2.8mm","55mm","30.43mm","5.29mm","客服电话：11183");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("6.2mm","55mm","29.1mm","5.29mm","www.ems.com.cn");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_BARCODE("10mm","3.4mm","72mm","14mm","128A","<%= express.new_express_no %>");
+    LODOP.ADD_PRINT_LINE("26mm","2mm","26mm","74mm",2,1);
+    
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("27mm","3mm","72mm","24mm","格口码: <%= express.route_code %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",22);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_LINE("45mm","2mm","45mm","74mm",2,1);
+    LODOP.ADD_PRINT_TEXT("46mm","3mm","40mm","7mm","收件人姓名: <%= express.receiver_name %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("46mm","35mm","25mm","7mm","收件人电话:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("46mm","54mm","25mm","7mm","<%= express.receiver_phone %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("50mm","3mm","72mm","21mm","收件人地址: <%= express.receiver_addr.tr("\n", "") %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_LINE("65mm","2mm","65mm","74mm",2,1);
+    LODOP.ADD_PRINT_TEXT("65.4mm","3mm","40mm","4mm","寄件人姓名: 招商银行信用卡中心");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("65.4mm","38mm","36mm","4mm","寄件人电话:4008205555");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("69.4mm","3mm","72mm","4mm","寄件人地址: 上海市浦东新区上海邮政120-058信箱");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_LINE("73mm","2mm","73mm","74mm",2,1);
+    LODOP.ADD_PRINT_TEXT("74mm","3mm","36mm","4mm","实际重量:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("74mm","36mm","36mm","4mm","体积(cm):");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("78mm","3mm","36mm","4mm","邮费:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("78mm","36mm","36mm","4mm","保价金额:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("82mm","3mm","36mm","4mm","其他费用:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("82mm","36mm","36mm","4mm","实收金额:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_LINE("86.2mm","2mm","86.2mm","74mm",2,1);
+    LODOP.ADD_PRINT_LINE("89.2mm","2mm","89.2mm","74mm",2,1);
+    
+    LODOP.ADD_PRINT_TEXT("96mm","49.2mm","25mm","4mm","打印时间:<%= Time.now.strftime("%Y-%m-%d %H:%M:%S") %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("112mm","49.2mm","25mm","4mm","打印账号: <%= current_user.name %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_LINE("126mm","2mm","126mm","74mm",2,1);
+    LODOP.ADD_PRINT_LINE("129mm","2mm","129mm","74mm",2,1);
+    // 竖线
+    LODOP.ADD_PRINT_LINE("2mm","2mm","129mm","2mm",2,1);
+    LODOP.ADD_PRINT_LINE("89.2mm","49mm","129mm","49mm",2,1);
+    LODOP.ADD_PRINT_LINE("2mm","74mm","129mm","74mm",2,1);
+
+    //设置某个打印机
+    
+    // LODOP.PRINT_DESIGN();
+    LODOP.PREVIEW();
+    // LODOP.PRINT();
+    <% end %>
+    };
+
+    if (needCLodop()) {
+      //如果是只运行C-Lodop,只需下边的代码，
+      //C-Lodop----begin----
+      window.On_CLodop_Opened=function(){
+        tkzd_preview(); //OpenPreview()是调用打印方法                      
+        window.On_CLodop_Opened=null;
+      };  
+      //C-Lodop----end----                
+    } else {
+      window.onload = function(){
+        tkzd_preview(); //使用lodop控件时的调用
+        window.open('','_top');
+        // window.top.close();
+      };  
+    }
+
+    setTimeout(function(){window.top.close()},3000);                
+
+  </script>
+
+</head>
+
+  <!-- <body onLoad="tkzd_preview();window.opener=null;window.open('','_top'); window.top.close();"> -->
+
+  </body>
+</html>

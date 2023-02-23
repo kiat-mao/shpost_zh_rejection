@@ -1,0 +1,58 @@
+<%- model_class = Express -%>
+<div class="page-header">
+<h1><%=t '.title', :default => [:'helpers.titles.index', '%{model} Manage'], :model => model_class.model_name.human.titleize %></h1>
+  <%= render partial: '/layouts/page_size' %>
+  <div style="float:right">
+    <% if can? :tkzd, Express %>
+    <%= button_tag "打印面单",:class => 'btn btn-primary', :id => "tkzds" %>
+    <% end %>
+  </div>
+</div> 
+
+<div>
+<%= form_tag('', :method => "post", name: 'form1') do %>
+  <%= grid(@expresses_grid) do |g|
+    g.action_column select_all_buttons: true do |express|
+      !express.new_express_no.blank? && !express.route_code.blank? && (["done", "feedback"].include?express.status)
+    end 
+
+    g.column name: model_class.human_attribute_name(:express_no), attribute: 'express_no'
+
+    g.column name: model_class.human_attribute_name(:scaned_at), attribute: 'scaned_at' do |express|
+      express.scaned_at.blank? ? "" : express.scaned_at.strftime('%Y-%m-%d %H:%M:%S')
+    end
+
+    g.column name: model_class.human_attribute_name(:batch_id), attribute: 'batch_id', assoc: :batch, attribute: 'name'
+
+    g.column name: model_class.human_attribute_name(:anomaly), attribute: 'anomaly' do |express| 
+      express.anomaly? ? '是' : '否'
+    end
+
+    g.column name: model_class.human_attribute_name(:deal_require), attribute: 'deal_require',custom_filter: Express::DEAL_REQUIRE_NAME.invert do |express| 
+      express.deal_require_name
+    end
+
+    g.column name: model_class.human_attribute_name(:deal_result), attribute: 'deal_result',custom_filter: Express::DEAL_RESULT_NAME.invert do |express| 
+      express.deal_result_name
+    end
+
+    g.column name: model_class.human_attribute_name(:new_express_no), attribute: 'new_express_no'
+
+    g.column name: model_class.human_attribute_name(:receiver_name), attribute: 'receiver_name'
+
+    g.column name: model_class.human_attribute_name(:receiver_phone), attribute: 'receiver_phone'
+
+    g.column name: model_class.human_attribute_name(:receiver_addr), attribute: 'receiver_addr'
+
+    g.column name: model_class.human_attribute_name(:receiver_postcode), attribute: 'receiver_postcode'
+
+    g.column name: model_class.human_attribute_name(:status), attribute: 'status',custom_filter: Express::STATUS_NAME.invert do |express| 
+      express.status_name
+    end
+
+    
+
+  end 
+  %>
+<% end %>
+</div>

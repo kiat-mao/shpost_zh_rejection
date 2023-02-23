@@ -1,0 +1,25 @@
+<div class="page-header">
+  <h1>重寄扫描</h1>
+</div>
+<%= form_tag('', name: 'form1') do -%>
+<%= hidden_field_tag('last_express_no', '') %>
+<audio src="<%=asset_path("resend.mp3")%>" id="resend_alert"></audio>
+<audio src="<%=asset_path("return.mp3")%>" id="return_alert"></audio>
+<audio src="<%=asset_path("not_found.mp3")%>" id="not_found_alert"></audio>
+<audio src="<%=asset_path("address_failed.mp3")%>" id="address_failed_alert"></audio>
+<div>
+	<table>
+		<tr class= 'nowrap'>
+ 			<td><h4>邮件号: <%= text_field_tag 'resend_express_no', nil, class: "controls showmask", size: "30", :id => "resend_express_no", maxlength: 13, :disabled => false %></h4></td>
+ 			<td><%= button_tag "重置",:class => 'btn btn-primary', :id => "reset", :type => "button"%></td>
+ 			<!-- <td><%= button_tag "打印面单",:class => 'btn btn-primary', :id => "tkzd", :disabled => true, onclick: "window.open('/packages/tkzd', '_blank');" %></td> -->
+			<td></td>
+			<td><font color="green"><h3><%= label_tag 'new_express_no', "", class: 'control-group', :id => "new_express_no" %></h3></font></td>
+			<td><font color="green"><h3><%= label_tag 'route_code', "", class: 'control-group', :id => "route_code" %></h3></font></td>
+		</tr>
+	</table>
+</div>
+<div id="resend_out_results">
+  <%= render :partial => 'expresses/resend_scan_form' %>
+</div>
+<% end %>

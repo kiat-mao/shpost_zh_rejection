@@ -20,6 +20,66 @@ zh-CN:
           needrole:
             can: :read
             role: :User
+    batch:
+      name: "堆管理"
+      needrole:
+        can: :read
+        role: :Batch
+      submenu:
+        batch:
+          name: "堆管理"  
+          link: "/batches"
+          need_count: false
+          needrole:
+            can: :read
+            role: :Batch
+    express:
+      name: "邮件管理"
+      needrole:
+        can: :read
+        role: :Express
+      submenu:
+        expresses:
+          name: "邮件管理"  
+          link: "/expresses"
+          need_count: false
+          needrole:
+            can: :read
+            role: :Express
+        change_express_addr:
+          name: "邮件改址"  
+          link: "/expresses/change_express_addr"
+          need_count: false
+          needrole:
+            can: :change_express_addr
+            role: :Express
+        anomaly_index:
+          name: "扫描异常邮件"  
+          link: "/expresses/anomaly_index"
+          need_count: false
+          needrole:
+            can: :anomaly_index
+            role: :Express
+    express_scan:
+      name: "邮件扫描"
+      needrole:
+        can: :read
+        role: :Express
+      submenu:
+        return_scan:
+          name: "退件扫描"  
+          link: "/expresses/return_scan"
+          need_count: false
+          needrole:
+            can: :return_scan
+            role: :Express
+        resend_scan:
+          name: "重寄扫描"  
+          link: "/expresses/resend_scan"
+          need_count: false
+          needrole:
+            can: :resend_scan
+            role: :Express
     up_downloads:
       name: "模板管理"
       needrole:

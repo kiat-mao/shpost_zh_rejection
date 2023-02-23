@@ -1,0 +1,34 @@
+$('#resend_express_no').blur();
+<% if @deal_require.eql?"not_found" %>
+	var audio = document.getElementById("not_found_alert");
+	audio.play();
+	$('#last_express_no').val("");
+<% elsif @deal_require.eql?"address_failed" %>
+	var audio = document.getElementById("address_failed_alert");
+	audio.play();
+	$('#last_express_no').val("");
+<% elsif @deal_require.eql?"03" %>
+	var audio = document.getElementById("return_alert");
+	audio.play();
+	$('#last_express_no').val("");
+<% elsif ["01", "02"].include?@deal_require %>
+	var audio = document.getElementById("resend_alert");
+	audio.play();
+	alert("邮件需重寄");
+	$('#last_express_no').val("<%= @resend_express_no %>");
+	// if(confirm("是否打印面单？")){
+	// 	window.open("../expresses/tkzd?express_id="+<%= Express.find_by(express_no: @resend_express_no).id %>);
+	// 	$('#resend_express_no').blur();
+	// 	showMask();
+	// 	$('#resend_express_no').attr("disabled","disabled");
+	// }
+<% end %>
+$('#resend_express_no').val("");
+$('#resend_out_results').html(" <%= escape_javascript(render(:partial => 'expresses/resend_scan_form')) %> ");
+$('#new_express_no').text("");
+$('#route_code').text("");
+$('#resend_express_no').focus();
+
+// function showMask(){
+// 	document.getElementById('mid').style.display="block";
+// }

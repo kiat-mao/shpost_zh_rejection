@@ -1,0 +1,30 @@
+<%- model_class = Batch -%>
+<div class="page-header">
+<h1><%=t '.title', :default => [:'helpers.titles.index', '%{model} Manage'], :model => model_class.model_name.human.titleize %></h1>
+  <%= render partial: '/layouts/page_size' %>
+</div>
+
+<%= grid(@batches_grid) do |g|
+
+    g.column name: model_class.human_attribute_name(:name), attribute: 'name'
+  
+    g.column name: model_class.human_attribute_name(:status), attribute: 'status',custom_filter: Batch::STATUS_NAME.invert do |batch| 
+      batch.status_name
+    end
+
+    g.column name: model_class.human_attribute_name(:created_at), attribute: 'created_at' do |batch|
+      l batch.created_at
+    end
+
+    g.column do |batch|
+      ActiveSupport::SafeBuffer.new << 
+      (link_to '邮件信息', expresses_path(batch_id: batch.id), :class => 'btn btn-xs btn-primary', target: '_blank' if can? :read, Express) << ' ' <<
+      if batch.all_expresses_done
+        (link_to "任务完成", done_batch_path(batch), :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status!="done"))
+      else
+        (link_to "任务完成", done_batch_path(batch), :data => { :confirm => "确定完成?还有邮件未扫描" }, :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status!="done"))
+      end
+    end
+  end 
+%>
+

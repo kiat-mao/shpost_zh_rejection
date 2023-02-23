@@ -2,7 +2,7 @@ class CreateExpresses < ActiveRecord::Migration[6.0]
   def change
     create_table :expresses do |t|
       t.string   :express_no, index: true
-      t.datetime :sacaned_at
+      t.datetime :scaned_at
 
       t.string   :sender_province
       t.string   :sender_city

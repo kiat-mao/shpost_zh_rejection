@@ -1,0 +1,13 @@
+document.getElementById('mid').style.display='none';
+$('#resend_express_no').removeAttr('disabled');
+$('#resend_express_no').val("");
+$('#resend_express_no').focus();
+<% if @msg.eql?"成功" %>
+	window.open("../expresses/tkzd?express_id="+<%= @express.id %>);
+	$('#new_express_no').text("");
+	$('#route_code').text("");
+	$('#resend_out_results').html("");
+	$('#last_express_no').val("");
+<% else %>
+	alert("<%= @msg %>");
+<% end %>

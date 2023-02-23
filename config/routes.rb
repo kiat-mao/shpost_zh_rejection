@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :expresses
   root 'welcome#index'
   
   devise_for :users, controllers: { sessions: "users/sessions" }
@@ -46,6 +45,36 @@ Rails.application.routes.draw do
       post 'up_download_export' => 'up_downloads#up_download_export'
     end
   end
+
+  resources :expresses do
+    collection do 
+      get 'return_scan'
+      post 'return_scan'
+      post 'return_save'
+      get 'resend_scan'
+      post 'resend_scan'
+      post 'find_resend_express_result'
+      get 'tkzd'
+      post 'tkzd'
+      post 'get_new_express_no_and_print'
+      get 'change_express_addr'
+      post 'change_express_addr'
+      get 'set_no_modify'
+      post 'set_no_modify'
+      get 'anomaly_done'
+      post 'anomaly_done'
+      get 'anomaly_index'
+    end
+  end
+
+  resources :batches do
+    member do
+      get 'done'
+      post 'done' => 'batches#done'
+    end
+  end
+    
+
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

@@ -1,0 +1,27 @@
+<div class="page-header">
+  <h1>退件扫描</h1>
+</div>
+<%= form_tag('', name: 'form1', method: 'post') do -%>
+<%= hidden_field_tag('scaned_nos', "") %>
+<%= hidden_field_tag('htmls', "") %>
+<%= hidden_field_tag('num', 0) %>
+<div>
+	<table>
+		<tr>
+			<td><h4>已扫邮件数:<font color="red"><%= label_tag 'return_amount', 0, class: 'control-group', :id => "return_amount" %></h4></font></td>
+		</tr>
+		<tr>
+			<td><h4>堆名: <%= text_field_tag 'batch_name', nil, size: "25", :id => "batch_name" %></h4></td>			
+		</tr>
+		<tr>
+			<td><h4>邮件号: <%= text_field_tag 'express_no', nil, class: "controls showmask", size: "30", maxlength: 13, :id => "express_no", :disabled => false %></h4></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td><%= button_tag "重置",:class => 'btn btn-primary', :id => "reset", :type => "button"%></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td><%= submit_tag "保存",:class => 'btn btn-primary', method: :post, :id => "return_save" %></td>
+		</tr>
+	</table>
+</div>
+<div id="out_results">
+</div>
+<% end %>

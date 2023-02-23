@@ -1,0 +1,22 @@
+<% if !@express.blank? %>
+<table class="table table-striped"> 
+	<thead>
+		<tr>
+			<th>原运单号</th>
+			<th>处理方式</th>
+			<th>收件人地址</th>
+			<th>收件人姓名</th>
+			<th>收件人电话</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+	  	<td><%= @express.express_no %></td>
+	  	<td><%= @express.deal_require_name %></td>
+	  	<td><%= @express.receiver_addr %></td>
+	  	<td><%= @express.receiver_name %></td>
+	  	<td><%= @express.receiver_phone %></td>
+	  </tr>
+	</tbody>
+</table>
+<% end %>

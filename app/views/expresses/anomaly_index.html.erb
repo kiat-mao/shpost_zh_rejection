@@ -1,0 +1,30 @@
+<%- model_class = Express -%>
+<div class="page-header">
+<h1>扫描异常邮件</h1>
+  <%= render partial: '/layouts/page_size' %>
+  <div style="float:right">
+    <% if can? :anomaly_done, Express %>
+    <%= submit_tag "异常处理完成",:class => 'btn btn-primary', onclick: "form1.action='anomaly_done';form1.submit();" %>
+    <% end %>
+  </div>
+</div> 
+
+<div>
+<%= form_tag('', :method => "post", name: 'form1') do %>
+  <%= grid(@expresses_grid) do |g|
+    g.action_column select_all_buttons: true
+
+    g.column name: model_class.human_attribute_name(:express_no), attribute: 'express_no'
+
+    g.column name: model_class.human_attribute_name(:scaned_at), attribute: 'scaned_at' do |express|
+      express.scaned_at.blank? ? "" : express.scaned_at.strftime('%Y-%m-%d %H:%M:%S')
+    end
+
+    g.column name: model_class.human_attribute_name(:anomaly_desc), attribute: 'anomaly_desc'
+
+    g.column name: model_class.human_attribute_name(:batch_id), attribute: 'batch_id', assoc: :batch, attribute: 'name'
+
+  end 
+  %>
+<% end %>
+</div>

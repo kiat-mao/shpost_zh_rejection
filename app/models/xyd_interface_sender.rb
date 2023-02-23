@@ -41,7 +41,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		order["ecommerce_no"] = xydConfig[:ecommerce_no]
 		order["ecommerce_user_id"] = now_time.strftime("%Y%m%d%H%M%S%L")
 		order["inner_channel"] = xydConfig[:inner_channel]
-		order["logistics_order_no"] = "express" + express.id
+		order["logistics_order_no"] = "express" + express.id.to_s
 
 		# 20221115 区分国药上药
 		# if I18n.t('unit_no.gy').to_s == package.unit.no
