@@ -31,6 +31,10 @@
     l express.created_at
   end
 
+  g.column name: model_class.human_attribute_name(:address_status), attribute: 'address_status',custom_filter: Express::ADDRESS_STATUS_NAME.invert do |express| 
+      express.address_status_name
+    end
+
   g.column do |express|
     ActiveSupport::SafeBuffer.new << 
     (link_to t('.edit', :default => t("helpers.links.edit")), edit_express_path(express), target: '_blank', :class => 'btn btn-xs btn-primary' if (can? :update, express))

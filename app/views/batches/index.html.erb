@@ -19,11 +19,7 @@
     g.column do |batch|
       ActiveSupport::SafeBuffer.new << 
       (link_to '邮件信息', expresses_path(batch_id: batch.id), :class => 'btn btn-xs btn-primary', target: '_blank' if can? :read, Express) << ' ' <<
-      if batch.all_expresses_done
-        (link_to "任务完成", done_batch_path(batch), :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status!="done"))
-      else
-        (link_to "任务完成", done_batch_path(batch), :data => { :confirm => "确定完成?还有邮件未扫描" }, :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status!="done"))
-      end
+      (link_to "任务完成", done_batch_path(batch), :data => { :confirm => "确定完成?未扫描到的邮件号将反馈招行失败" }, :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status=="pending"))
     end
   end 
 %>

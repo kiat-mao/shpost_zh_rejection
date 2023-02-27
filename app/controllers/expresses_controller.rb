@@ -2,8 +2,7 @@ class ExpressesController < ApplicationController
   load_and_authorize_resource :express
   protect_from_forgery :except => [:tkzd]
 
-  # GET /expresses
-  # GET /expresses.json
+  # 邮件管理
   def index
   	if !params[:batch_id].blank?
   		@expresses = Express.where(batch_id: params[:batch_id]).order("scaned_at desc, express_no asc")
@@ -13,8 +12,7 @@ class ExpressesController < ApplicationController
          :per_page => params[:page_size])
   end
 
-  # GET /expresses
-  # GET /expresses.json
+  # 异常邮件处理
   def anomaly_index
 		@expresses = Express.where(anomaly: true, removed: false).order("scaned_at desc, express_no asc")
 	  
@@ -46,6 +44,7 @@ class ExpressesController < ApplicationController
     end
   end
 
+  # 打印
   def tkzd
   	@result = []
   	@express_id = params[:express_id]
@@ -69,10 +68,11 @@ class ExpressesController < ApplicationController
     end
   end
 
-
+  # 退件扫描
   def return_scan
   end
 
+  # 退件扫描,保存
   def return_save
   	if !params["batch_name"].blank? && !params["scaned_nos"].blank?
   		scaned_nos = params["scaned_nos"].split(",")
@@ -85,10 +85,12 @@ class ExpressesController < ApplicationController
   	redirect_to request.referer
   end
 
+  # 重寄扫描
   def resend_scan
   	@express = nil
   end
 
+  # 重寄扫描,查询邮件号
   def find_resend_express_result
   	@resend_express_no = params[:resend_express_no]
   	@express = Express.find_by(status: "pending", express_no: @resend_express_no)
@@ -106,9 +108,9 @@ class ExpressesController < ApplicationController
   			end
   		end
   	end
-  	# byebug
   end
 
+  # 取新邮件号,格口码并跳转打印
   def get_new_express_no_and_print
   	deal_result = ""
   	last_express_no = params[:last_express_no]
@@ -129,9 +131,11 @@ class ExpressesController < ApplicationController
 	  end
   end
 
+  # 邮件改址
   def change_express_addr
-  	@expresses = @expresses.accessible_by(current_ability).where.not(status: ["done", "feedback"]).where(no_modify: false)
+  	@expresses = @expresses.accessible_by(current_ability).where(status: "pending").where(no_modify: false)
 
+  	# 筛选异地邮件
     if !params[:abnormal].blank? && (params[:abnormal].eql?"true")
       @expresses = @expresses.where("(receiver_province not like (?) or ((receiver_province is ? or receiver_city is ? or receiver_district is ?) and address_status = ?) or address_status= ?) and no_modify = ?", "上海%", nil, nil, nil, "address_success", "address_failed", false)
     end
@@ -142,6 +146,7 @@ class ExpressesController < ApplicationController
          :per_page => params[:page_size])
   end
 
+  # 邮件改址,无需修改
   def set_no_modify
     if params[:grid] && params[:grid][:selected]
       selected = params[:grid][:selected]
@@ -173,6 +178,7 @@ class ExpressesController < ApplicationController
 		return msg			
 	end
 
+	# 异常邮件处理,异常处理完成
 	def anomaly_done
 		expresses = []
 

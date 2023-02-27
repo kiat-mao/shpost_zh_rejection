@@ -54,7 +54,7 @@ zh-CN:
             can: :change_express_addr
             role: :Express
         anomaly_index:
-          name: "扫描异常邮件"  
+          name: "异常邮件处理"  
           link: "/expresses/anomaly_index"
           need_count: false
           needrole:
