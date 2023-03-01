@@ -40,7 +40,7 @@ zh-CN:
       callback_class: 'XydInterfaceSender'
       callback_method: 'address_parsing_callback_method'
       header: "{\"Content-Type\":\"application/json\"}"
-      parent_class: 'Order'
+      parent_class: 'Express'
       # object_class: 'Keyclientorder'
       max_times: 1 #default_times: 10
       interval: 1000 #default_interval: 600
