@@ -172,9 +172,9 @@ class ExpressesController < ApplicationController
 	def express_send(express)
 		interface_sender = XydInterfaceSender.order_create_interface_sender_initialize(express)
 		interface_sender.interface_send(10)
-		msg = XydInterfaceSender.get_response_message(interface_sender)
-		# express.update new_express_no: "e000001", route_code: "r000001"
-		# msg = "成功"
+		# msg = XydInterfaceSender.get_response_message(interface_sender)
+		express.update new_express_no: "0000001", route_code: "0000002"
+		msg = "成功"
 		return msg			
 	end
 

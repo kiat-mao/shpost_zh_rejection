@@ -137,10 +137,10 @@ class Express < ApplicationRecord
 	  	to_deal_r_files.each do |ff|
 	  		file_path_r = File.join(direct_r, ff)
 	  		file_path_t = File.join(direct_t, "decrypt_#{ff}")
-	  		FileHelper.sm4_decrypt_file(key, file_path_r, file_path_t = nil)
+	  		# FileHelper.sm4_decrypt_file(key, file_path_r, file_path_t = nil)
 
-	  		File.open(file_path_t, "r:UTF-8") do |file|
-	  		# File.open(file_path_r, "r:UTF-8") do |file|
+	  		# File.open(file_path_t, "r:UTF-8") do |file|
+	  		File.open(file_path_r, "r:UTF-8") do |file|
 	  			file.each_line do |line|
 	  				columns = line.split("!")
 	  				e = Express.find_by(express_no: columns[1], status: "uploaded")
@@ -189,10 +189,10 @@ class Express < ApplicationRecord
 	  	to_deal_r_files.each do |ff|
 	  		file_path_r = File.join(direct_r, ff)
 	  		file_path_t = File.join(direct_t, "decrypt_#{ff}")
-	  		FileHelper.sm4_decrypt_file(key, file_path_r, file_path_t = nil)
+	  		# FileHelper.sm4_decrypt_file(key, file_path_r, file_path_t = nil)
 
-	  		File.open(file_path_t, "r:UTF-8") do |file|
-	  		# File.open(file_path_r, "r:UTF-8") do |file|
+	  		# File.open(file_path_t, "r:UTF-8") do |file|
+	  		File.open(file_path_r, "r:UTF-8") do |file|
 	  			file.each_line do |line|
 	  				columns = line.split("!")
 	  				e = Express.find_by(express_no: columns[0], status: "checked")
