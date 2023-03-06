@@ -2,7 +2,7 @@ class XydInterfaceSender < ActiveRecord::Base
 
 	def self.address_parsing_schedule
 		xydConfig = Rails.application.config_for(:xyd)
-		expresses = Express.
+		expresses = Express.address_waiting
 		expresses.each do |express|
 			self.address_parsing_interface_sender_initialize express
 		end

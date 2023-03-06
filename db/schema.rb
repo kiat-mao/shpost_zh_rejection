@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_02_024537) do
+ActiveRecord::Schema.define(version: 2023_02_08_062848) do
 
   create_table "batches", force: :cascade do |t|
     t.string "name"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2023_02_02_024537) do
 
   create_table "expresses", force: :cascade do |t|
     t.string "express_no"
-    t.datetime "sacaned_at"
+    t.datetime "scaned_at"
     t.string "sender_province"
     t.string "sender_city"
     t.string "sender_district"
@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(version: 2023_02_02_024537) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "address_status"
+    t.integer "batch_id"
+    t.boolean "no_modify", default: false
     t.index ["express_no"], name: "index_expresses_on_express_no"
     t.index ["new_express_no"], name: "index_expresses_on_new_express_no"
   end

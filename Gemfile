@@ -1,4 +1,4 @@
-source 'https://gems.ruby-china.com/'
+source 'https://rubygems.org/'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.5'
@@ -91,6 +91,8 @@ gem 'bootstrap-table-rails', '~> 1.13', '>= 1.13.4'
 gem 'whenever', '~> 1.0'
 
 gem 'net-sftp', '~> 2.1.3.rc3'
+
+gem 'httpclient', '~> 2.8', '>= 2.8.3'
 
 ########Oracle##############
 # gem 'ruby-oci8'
