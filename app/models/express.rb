@@ -1,6 +1,6 @@
 class Express < ApplicationRecord
   belongs_to :batch
-
+  
   enum status: {waiting: 'waiting', uploaded: 'uploaded', checked: 'checked', cancelled: 'cancelled', pending: 'pending', done: 'done',  feedback: 'feedback'}
   STATUS_NAME = {waiting: '待上传', uploaded: '待核实', checked: '已核实', cancelled: '已取消', pending: '待处理', done: '处理完成', feedback: '已反馈'}
 
@@ -202,7 +202,7 @@ class Express < ApplicationRecord
 	  					if ["01", "02"].include?columns[1]
 	  						e.update deal_require: columns[1], status: "pending", address_status: "address_waiting", receiver_postcode: columns[2], receiver_addr: columns[3], receiver_name: columns[4], receiver_phone: columns[5]
 	  					else
-	  						e.update deal_require: columns[1], status: "pending", address_status: "address_waiting"
+	  						e.update deal_require: columns[1], status: "pending"#, address_status: "address_waiting"
 	  					end
 	  				end
 	  			end

@@ -16,6 +16,10 @@
       l batch.created_at
     end
 
+    g.column name: model_class.human_attribute_name(:operator1), attribute: 'operator1', custom_filter: User.where.not(role: 'superadmin').map{|u| [u.name,u.id]}, allow_multiple_selection: false do |batch|
+      User.find(batch.operator1).name
+    end
+
     g.column do |batch|
       ActiveSupport::SafeBuffer.new << 
       (link_to '邮件信息', expresses_path(batch_id: batch.id), :class => 'btn btn-xs btn-primary', target: '_blank' if can? :read, Express) << ' ' <<

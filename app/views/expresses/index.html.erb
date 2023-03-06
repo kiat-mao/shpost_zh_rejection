@@ -28,6 +28,10 @@
       express.anomaly? ? '是' : '否'
     end
 
+    g.column name: model_class.human_attribute_name(:status), attribute: 'status',custom_filter: Express::STATUS_NAME.invert do |express| 
+      express.status_name
+    end
+
     g.column name: model_class.human_attribute_name(:deal_require), attribute: 'deal_require',custom_filter: Express::DEAL_REQUIRE_NAME.invert do |express| 
       express.deal_require_name
     end
@@ -46,11 +50,13 @@
 
     g.column name: model_class.human_attribute_name(:receiver_postcode), attribute: 'receiver_postcode'
 
-    g.column name: model_class.human_attribute_name(:status), attribute: 'status',custom_filter: Express::STATUS_NAME.invert do |express| 
-      express.status_name
+    g.column name: model_class.human_attribute_name(:operator1), attribute: 'operator1', custom_filter: User.where.not(role: 'superadmin').map{|u| [u.name,u.id]}, allow_multiple_selection: false do |express|
+      User.find(express.operator1).name
     end
 
-    
+    g.column name: model_class.human_attribute_name(:operator2), attribute: 'operator2', custom_filter: User.where.not(role: 'superadmin').map{|u| [u.name,u.id]}, allow_multiple_selection: false do |express|
+      User.find(express.operator2).name
+    end
 
   end 
   %>

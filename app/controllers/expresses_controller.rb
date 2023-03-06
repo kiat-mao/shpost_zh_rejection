@@ -76,9 +76,9 @@ class ExpressesController < ApplicationController
   def return_save
   	if !params["batch_name"].blank? && !params["scaned_nos"].blank?
   		scaned_nos = params["scaned_nos"].split(",")
-  		batch = Batch.create! name: params["batch_name"], status: "waiting"
+  		batch = Batch.create! name: params["batch_name"], status: "waiting", operator1: current_user.id
   		scaned_nos.each do |s|
-  			batch.expresses.create! express_no: s, scaned_at: Time.now, status: "waiting"
+  			batch.expresses.create! express_no: s, scaned_at: Time.now, status: "waiting", operator1: current_user.id
   		end
   	end
   	flash[:notice] = "保存成功"		
@@ -126,7 +126,7 @@ class ExpressesController < ApplicationController
 	    		deal_result = "03"
 	    	end
 	    			
-	    	@express.update status:"done", deal_result: deal_result
+	    	@express.update status:"done", deal_result: deal_result, operator2: current_user.id
 	    end
 	  end
   end

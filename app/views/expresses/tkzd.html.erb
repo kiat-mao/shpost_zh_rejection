@@ -20,106 +20,162 @@
     }
     LODOP.SET_LICENSES("上海市邮政公司信息技术局","452677782688188907989821905623","","");
     <% @result.sort_by{|x| x.express_no.upcase}.each do |express| %>
-    LODOP.PRINT_INIT("打印特快专递单");
-    LODOP.SET_PRINT_PAGESIZE(1,750,1300,"tkzd");
-    LODOP.ADD_PRINT_LINE("2mm","2mm","2mm","74mm",2,1);
-    
-    LODOP.ADD_PRINT_TEXT("2.8mm","24mm","30mm","6.61mm","特快专递");
+    LODOP.PRINT_INITA("2mm","1mm","100mm","150mm","打印特快专递单");
+    LODOP.SET_PRINT_PAGESIZE(1,1000,1500,"tkzd");
+
+    LODOP.ADD_PRINT_TEXT("14mm","11mm","30mm","8mm","标准快递");
     LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
     LODOP.SET_PRINT_STYLEA(0,"Bold",1);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("2.8mm","55mm","30.43mm","5.29mm","客服电话：11183");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("6.2mm","55mm","29.1mm","5.29mm","www.ems.com.cn");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_BARCODE("10mm","3.4mm","72mm","14mm","128A","<%= express.new_express_no %>");
-    LODOP.ADD_PRINT_LINE("26mm","2mm","26mm","74mm",2,1);
     
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("27mm","3mm","72mm","24mm","格口码: <%= express.route_code %>");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",22);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_LINE("45mm","2mm","45mm","74mm",2,1);
-    LODOP.ADD_PRINT_TEXT("46mm","3mm","40mm","7mm","收件人姓名: <%= express.receiver_name %>");
+    LODOP.ADD_PRINT_TEXT("22mm","4mm","50mm","7mm","时间:  <%= Time.now.strftime('%Y-%m-%d %H:%M:%S') %>");
     LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("46mm","35mm","25mm","7mm","收件人电话:");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("46mm","54mm","25mm","7mm","<%= express.receiver_phone %>");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("50mm","3mm","72mm","21mm","收件人地址: <%= express.receiver_addr.tr("\n", "") %>");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_LINE("65mm","2mm","65mm","74mm",2,1);
-    LODOP.ADD_PRINT_TEXT("65.4mm","3mm","40mm","4mm","寄件人姓名: 招商银行信用卡中心");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("65.4mm","38mm","36mm","4mm","寄件人电话:4008205555");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("69.4mm","3mm","72mm","4mm","寄件人地址: 上海市浦东新区上海邮政120-058信箱");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_LINE("73mm","2mm","73mm","74mm",2,1);
-    LODOP.ADD_PRINT_TEXT("74mm","3mm","36mm","4mm","实际重量:");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("74mm","36mm","36mm","4mm","体积(cm):");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("78mm","3mm","36mm","4mm","邮费:");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("78mm","36mm","36mm","4mm","保价金额:");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("82mm","3mm","36mm","4mm","其他费用:");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_TEXT("82mm","36mm","36mm","4mm","实收金额:");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_LINE("86.2mm","2mm","86.2mm","74mm",2,1);
-    LODOP.ADD_PRINT_LINE("89.2mm","2mm","89.2mm","74mm",2,1);
-    
-    LODOP.ADD_PRINT_TEXT("96mm","49.2mm","25mm","4mm","打印时间:<%= Time.now.strftime("%Y-%m-%d %H:%M:%S") %>");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
     
-    LODOP.ADD_PRINT_TEXT("112mm","49.2mm","25mm","4mm","打印账号: <%= current_user.name %>");
-    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
-    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
-    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
-    LODOP.ADD_PRINT_LINE("126mm","2mm","126mm","74mm",2,1);
-    LODOP.ADD_PRINT_LINE("129mm","2mm","129mm","74mm",2,1);
-    // 竖线
-    LODOP.ADD_PRINT_LINE("2mm","2mm","129mm","2mm",2,1);
-    LODOP.ADD_PRINT_LINE("89.2mm","49mm","129mm","49mm",2,1);
-    LODOP.ADD_PRINT_LINE("2mm","74mm","129mm","74mm",2,1);
+    LODOP.ADD_PRINT_BARCODE("11mm","50mm","50mm","14mm","128A",'<%= express.new_express_no %>');
 
+    LODOP.ADD_PRINT_LINE("27mm","2mm","27mm","101mm",1,1);
+
+    LODOP.ADD_PRINT_TEXT("29mm","4mm","50mm","5mm","寄件人: 招商银行信用卡中心");   
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("29mm","54mm","50mm","5mm","电话:4008205555");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("33mm","4mm","100mm","5mm","寄件人地址: 上海市浦东新区上海邮政120-058信箱");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("42mm","4mm","28mm","5mm","重量(KG)：0.07");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("42mm","34mm","20mm","5mm","保价金额");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("42mm","54mm","50mm","5mm","内件数：");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+
+    LODOP.ADD_PRINT_LINE("45mm","2mm","45mm","101mm",1,1);
+
+    LODOP.ADD_PRINT_TEXT("46mm","4mm","30mm","7mm","收件人姓名:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("46mm","28mm","75mm","7mm","<%= express.receiver_name %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("54mm","4mm","50mm","5mm","电话: <%= express.receiver_phone[0,3] %>****<%= express.receiver_phone[express.receiver_phone.length-4,4] %>");   
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("54mm","50mm","50mm","5mm","收件人邮编: <%= express.receiver_postcode %>");   
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("59mm","4mm","25mm","14mm","收件人地址: ");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("59mm","28mm","72mm","14mm","<%= express.receiver_addr %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_LINE("73mm","2mm","73mm","101mm",1,1);
+
+    LODOP.ADD_PRINT_TEXT("74mm","4mm","50mm","5mm","收件人签名: "); 
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");  
+    LODOP.ADD_PRINT_TEXT("74mm","54mm","50mm","5mm","签收时间： 年  月  日");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+
+    LODOP.ADD_PRINT_LINE("88mm","2mm","88mm","101mm",1,1);
+
+    LODOP.ADD_PRINT_TEXT("89mm","4mm","20mm","5mm","寄件人:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("89mm","21mm","80mm","5mm","招商银行 招商银行信用卡中心  计费重量(KG)：0.07");   
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("94mm","4mm","100mm","5mm","寄件人地址: 上海市浦东新区上海邮政120-058信箱");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("101mm","4mm","100mm","5mm","电话:4008205555");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+
+    LODOP.ADD_PRINT_LINE("105mm","2mm","105mm","101mm",1,1);
+
+    LODOP.ADD_PRINT_TEXT("106mm","4mm","30mm","7mm","收件人姓名:");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("106mm","28mm","26mm","7mm","<%= express.receiver_name %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("106mm","54mm","50mm","7mm","电话:   <%= express.receiver_phone[0,3] %>****<%= express.receiver_phone[express.receiver_phone.length-4,4] %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("113mm","4mm","25mm","14mm","收件人地址: ");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("113mm","28mm","72mm","14mm","<%= express.receiver_addr %>");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_LINE("125mm","2mm","125mm","101mm",1,1);
+
+    LODOP.ADD_PRINT_BARCODE("128mm","10mm","50mm","14mm","128A",'<%= express.new_express_no %>');
+
+    LODOP.ADD_PRINT_TEXT("134mm","70mm","40mm","7mm","已安检 已验视 陆家嘴");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    LODOP.ADD_PRINT_TEXT("137mm","70mm","15mm","7mm","已消毒");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+
+    LODOP.ADD_PRINT_TEXT("139mm","90mm","15mm","7mm","SCR18");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",6);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",0);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
+    LODOP.ADD_PRINT_TEXT("138.5mm","95.5mm","10mm","7mm","B");
+    LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
+    LODOP.SET_PRINT_STYLEA(0,"Bold",1);
+    LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
+    
     //设置某个打印机
     
     // LODOP.PRINT_DESIGN();

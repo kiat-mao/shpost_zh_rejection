@@ -316,10 +316,13 @@ zh-CN:
         deal_result: "处理结果"
         deal_desc: "处理备注"
         batch_id: "堆名"
+        operator1: "退件扫描员"
+        operator2: "重寄扫描员"
       batch:
         name: "堆名"
         status: "状态"
         created_at: "创建时间"
+        operator1: "退件扫描员"
   user_navigation:
     update_self: "个人信息"
     show_unit: "单位信息"
