@@ -3,11 +3,17 @@ default: &default
 
 development:
   <<: *default
-  ftp_ip:
-  username:
-  password:
+  ftp_ip: 10.126.41.144
+  username: miyaotest
+  password: SHp0st_BCL
 test:
   <<: *default
+  ftp_ip: 10.126.41.144
+  username: miyaotest
+  password: SHp0st_BCL
 
 production:
   <<: *default
+  ftp_ip: 10.126.41.144
+  username: miyaotest
+  password: SHp0st_BCL

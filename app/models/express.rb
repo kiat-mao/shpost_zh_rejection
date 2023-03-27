@@ -27,21 +27,6 @@ class Express < ApplicationRecord
     deal_result.blank? ? "" : Express::DEAL_RESULT_NAME["#{deal_result}".to_sym]
   end
 
-  def self.sftp_upload(file_path_l, file_path_r = './')
-    Net::SFTP.start('172.10.126.51', 'test0817', :password => 'test0817') do |sftp|
-      sftp.upload!(file_path_l, file_path_r)
-    end
-  end
-
-  # 生成文件（第1次上传）
-  # 文件内容格式: 运单号!配送商代码(001)!扫描时间!!!!
-  def self.to_zh_first_file
-  	start_date = Date.today-1.days
-    end_date = Date.today
-    file_path_name = to_zh_first_file_by_date(start_date, end_date)
-    # sftp_upload(file_path_name[0], "/upload/#{file_path_name[1]}")
-  end
-
   def self.to_zh_first_file_by_date(start_date, end_date)
   	filename = "OAPEM11U#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
     direct = I18n.t("to_zh_first_file_path")
@@ -68,15 +53,6 @@ class Express < ApplicationRecord
 	  	results.update_all status: "uploaded"
 	  end
   	f.close
-  end
-
-  # 生成文件（第2次上传）
-  # 文件内容格式: 原运单号!新运单号(运单号有变更时填写)!处理结果(01已改址重寄, 02重寄失败, 03已原地址寄送, 04重寄失败, 05退回卡厂成功, 06退回卡厂失败)!处理备注(处理结果02、04、06必填 处理结果异常描述)
-  def self.to_zh_second_file
-  	start_date = Date.today-1.days
-    end_date = Date.today
-    file_path_name = to_zh_second_file_by_date(start_date, end_date)
-    # sftp_upload(file_path_name[0], "/upload/#{file_path_name[1]}")
   end
 
   def self.to_zh_second_file_by_date(start_date, end_date)
@@ -106,13 +82,6 @@ class Express < ApplicationRecord
 	  	results.update_all status: "feedback"
 	  end
   	f.close
-  end
-
-  # 招行反馈核实结果（第1次取回）
-  # 文件内容格式: 在途改址请求文件文件名!配送单号!扫描时间!处理结果(01处理成功、02失败)!异常原因(非必填，当处理失败时有值)
-  def self.from_zh_first_file
-  	start_date = Date.today-1.days
-    file_path_name = from_zh_first_file_by_date(start_date)
   end
 
   def self.from_zh_first_file_by_date(start_date)
@@ -151,13 +120,6 @@ class Express < ApplicationRecord
 	  		end
 	  	end
 	  end
-  end
-
-  # 招行反馈核实结果（第2次取回）
-  # 文件内容格式: 原运单号!处理方式(01改址重寄, 02原地址重寄, 03退回卡厂）!变更后邮编(非必填 当重寄时有值)!变更后地址(非必填 当重寄时有值)!姓名(非必填 当重寄时有值)!手机号(非必填 当重寄时有值)!
-  def self.from_zh_second_file
-  	start_date = Date.today-1.days
-    file_path_name = from_zh_second_file_by_date(start_date)
   end
 
   def self.from_zh_second_file_by_date(start_date)
