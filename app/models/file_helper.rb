@@ -70,14 +70,15 @@ class FileHelper
       Dir.mkdir(direct_r)          
     end
 
-
-    sftp.dir.foreach("/ap2fct") do |entry|
-      self.sftp_download("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-      sftp.remove!("/ap2fct/#{entry.longname}")
-
-      start_date = Date.today-1.days
-      Express.from_zh_first_file_by_date(start_date)
+    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+      sftp.dir.foreach("/ap2fct") do |entry|
+        sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
+        sftp.remove!("/ap2fct/#{entry.longname}")
+      end
     end
+
+    start_date = Date.today-1.days
+    Express.from_zh_first_file_by_date(start_date)
   end
 
     # 招行反馈核实结果（第2次取回）
@@ -87,12 +88,14 @@ class FileHelper
       Dir.mkdir(direct_r)          
     end
 
-    sftp.dir.foreach("/ap2fct") do |entry|
-      self.sftp_download("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-      sftp.remove!("/ap2fct/#{entry.longname}")
-
-      start_date = Date.today-1.days
-      Express.from_zh_second_file_by_date(start_date)
+    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+      sftp.dir.foreach("/ap2fct") do |entry|
+        sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
+        sftp.remove!("/ap2fct/#{entry.longname}")
+      end
     end
+    
+    start_date = Date.today-1.days
+    Express.from_zh_second_file_by_date(start_date)
   end
 end
