@@ -337,7 +337,6 @@ zh-CN:
 
   to_zh_first_file_path: "../shpost_zh_rejection/public/to_zh_first_file/"
   to_zh_second_file_path: "../shpost_zh_rejection/public/to_zh_second_file/"
-  from_zh_first_file_r_path: "../shpost_zh_rejection/public/from_zh_first_file_r/"
-  from_zh_first_file_t_path: "../shpost_zh_rejection/public/from_zh_first_file_t/"
+  from_zh_first_file_path: "../shpost_zh_rejection/public/from_zh_first_file/"
   from_zh_second_file_r_path: "../shpost_zh_rejection/public/from_zh_second_file_r/"
   from_zh_second_file_t_path: "../shpost_zh_rejection/public/from_zh_second_file_t/"

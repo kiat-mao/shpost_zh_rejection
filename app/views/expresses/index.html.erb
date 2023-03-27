@@ -51,11 +51,11 @@
     g.column name: model_class.human_attribute_name(:receiver_postcode), attribute: 'receiver_postcode'
 
     g.column name: model_class.human_attribute_name(:operator1), attribute: 'operator1', custom_filter: User.where.not(role: 'superadmin').map{|u| [u.name,u.id]}, allow_multiple_selection: false do |express|
-      User.find(express.operator1).name
+      express.operator1.blank? ? "" : User.find(express.operator1).name
     end
 
     g.column name: model_class.human_attribute_name(:operator2), attribute: 'operator2', custom_filter: User.where.not(role: 'superadmin').map{|u| [u.name,u.id]}, allow_multiple_selection: false do |express|
-      User.find(express.operator2).name
+      express.operator2.blank? ? "" : User.find(express.operator2).name
     end
 
   end 

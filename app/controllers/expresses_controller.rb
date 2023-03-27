@@ -103,8 +103,9 @@ class ExpressesController < ApplicationController
   			@deal_require = "address_failed"
   		else
   			@deal_require = @express.deal_require
+  			# 03退回卡厂,05退回卡厂成功
   			if @deal_require.eql?"03"
-  				@express.update status: "done", deal_result: "05"
+  				@express.update status: "done", deal_result: "05", operator2: current_user.id, scaned_at: Time.now
   			end
   		end
   	end
@@ -119,6 +120,8 @@ class ExpressesController < ApplicationController
   		@express = Express.find_by(status: "pending", address_status: "address_success", express_no: last_express_no)
   		@msg = express_send(@express)
 
+  		# deal_require: 01(改址重寄), 02(原地址重寄), 03(退回卡厂)
+  		# deal_result: 01(已改址重寄), 02(重寄失败), 03(已原地址寄送), 04(重寄失败), 05(退回卡厂成功), 06(退回卡厂失败)
   		if @msg.eql?"成功"
 	    	if @express.deal_require.eql?"01"
 	    		deal_result = "01"
@@ -126,7 +129,7 @@ class ExpressesController < ApplicationController
 	    		deal_result = "03"
 	    	end
 	    			
-	    	@express.update status:"done", deal_result: deal_result, operator2: current_user.id
+	    	@express.update status:"done", deal_result: deal_result, operator2: current_user.id, scaned_at: Time.now
 	    end
 	  end
   end
@@ -170,10 +173,10 @@ class ExpressesController < ApplicationController
 
 	# 发送新一代接口，获取邮件号，格口码,返回'成功'或出错信息
 	def express_send(express)
-		interface_sender = XydInterfaceSender.order_create_interface_sender_initialize(express)
-		interface_sender.interface_send(10)
+		# interface_sender = XydInterfaceSender.order_create_interface_sender_initialize(express)
+		# interface_sender.interface_send(10)
 		# msg = XydInterfaceSender.get_response_message(interface_sender)
-		express.update new_express_no: "0000001", route_code: "0000002"
+		express.update new_express_no: "0000004", route_code: "0000004"
 		msg = "成功"
 		return msg			
 	end

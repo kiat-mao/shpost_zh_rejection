@@ -17,13 +17,17 @@
     end
 
     g.column name: model_class.human_attribute_name(:operator1), attribute: 'operator1', custom_filter: User.where.not(role: 'superadmin').map{|u| [u.name,u.id]}, allow_multiple_selection: false do |batch|
-      User.find(batch.operator1).name
+      batch.operator1.blank? ? "" : User.find(batch.operator1).name
     end
 
     g.column do |batch|
       ActiveSupport::SafeBuffer.new << 
       (link_to '邮件信息', expresses_path(batch_id: batch.id), :class => 'btn btn-xs btn-primary', target: '_blank' if can? :read, Express) << ' ' <<
-      (link_to "任务完成", done_batch_path(batch), :data => { :confirm => "确定完成?未扫描到的邮件号将反馈招行失败" }, :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status=="pending"))
+      if batch.expresses.where(status: "pending").blank?
+        (link_to "任务完成", done_batch_path(batch), :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status=="pending"))
+      else
+        (link_to "任务完成", done_batch_path(batch), :data => { :confirm => "确定完成?还有未扫描邮件" }, :class => 'btn btn-xs btn-primary' if (can? :done, batch) && (batch.status=="pending"))
+      end
     end
   end 
 %>
