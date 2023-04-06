@@ -173,11 +173,11 @@ class ExpressesController < ApplicationController
 
 	# 发送新一代接口，获取邮件号，格口码,返回'成功'或出错信息
 	def express_send(express)
-		# interface_sender = XydInterfaceSender.order_create_interface_sender_initialize(express)
-		# interface_sender.interface_send(10)
-		# msg = XydInterfaceSender.get_response_message(interface_sender)
-		express.update new_express_no: "0000004", route_code: "0000004"
-		msg = "成功"
+		interface_sender = XydInterfaceSender.order_create_interface_sender_initialize(express)
+		interface_sender.interface_send(10)
+		msg = XydInterfaceSender.get_response_message(interface_sender)
+		# express.update new_express_no: "0000004", route_code: "0000004"
+		# msg = "成功"
 		return msg			
 	end
 
