@@ -53,6 +53,7 @@ class FileHelper
     end_date = Date.today
     file_path_name = Express.to_zh_first_file_by_date(start_date, end_date)
     self.sftp_upload(file_path_name[0], "/#{upload_dir}/#{file_path_name[1]}")
+    Rails.logger.info("#{Time.now} zh_first_file upload #{file_path_name[1]}")
   end
 
   # 生成文件（第2次上传）
@@ -61,6 +62,7 @@ class FileHelper
     end_date = Date.today
     file_path_name = Express.to_zh_second_file_by_date(start_date, end_date)
     self.sftp_upload(file_path_name[0], "/#{upload_dir}/#{file_path_name[1]}")
+    Rails.logger.info("#{Time.now} zh_second_file upload #{file_path_name[1]}")
   end
 
   # 招行反馈核实结果（第1次取回）
@@ -74,6 +76,9 @@ class FileHelper
       sftp.dir.foreach("/#{download_dir}") do |entry|
         if entry.name.start_with? I18n.t("first_download")
           sftp.download!("/#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+
+          Rails.logger.info("#{Time.now} zh_first_file download #{entry.name}")
+
           sftp.remove!("/#{download_dir}/#{entry.name}")
         end
       end
@@ -94,6 +99,9 @@ class FileHelper
       sftp.dir.foreach("/#{download_dir}") do |entry|
         if entry.name.start_with? I18n.t("second_download")
           sftp.download!("/#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+
+          Rails.logger.info("#{Time.now} zh_second_file download #{entry.name}")
+
           sftp.remove!("/#{download_dir}/#{entry.name}")
         end
       end
