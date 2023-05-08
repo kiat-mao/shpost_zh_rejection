@@ -14,6 +14,7 @@ class FileHelper
     end
   end
 
+  #not use
   def self.sm4_encrypt_file(key, file_path_r, file_path_t = nil)
     file_path_t = "encrypt_#{file_path_r}" if file_path_t.blank?
     data = File.new(file_path_r).read
@@ -47,12 +48,11 @@ class FileHelper
   end
 
   # 生成文件（第1次上传）
-  
   def self.to_zh_first_file
     start_date = Date.today-1.days
     end_date = Date.today
     file_path_name = Express.to_zh_first_file_by_date(start_date, end_date)
-    self.sftp_upload(file_path_name[0], "/fct2ap/#{file_path_name[1]}")
+    self.sftp_upload(file_path_name[0], "/#{upload_dir}/#{file_path_name[1]}")
   end
 
   # 生成文件（第2次上传）
@@ -60,11 +60,7 @@ class FileHelper
     start_date = Date.today-1.days
     end_date = Date.today
     file_path_name = Express.to_zh_second_file_by_date(start_date, end_date)
-    self.sftp_upload(file_path_name[0], "/fct2ap/#{file_path_name[1]}")
-  end
-
-  def self.get_zh_files
-
+    self.sftp_upload(file_path_name[0], "/#{upload_dir}/#{file_path_name[1]}")
   end
 
   # 招行反馈核实结果（第1次取回）
@@ -75,10 +71,10 @@ class FileHelper
     end
 
     Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-      sftp.dir.foreach("/ap2fct") do |entry|
-        if entry.longname.start_with? "OAPEM11D"
-          sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-          sftp.remove!("/ap2fct/#{entry.longname}")
+      sftp.dir.foreach("/#{download_dir}") do |entry|
+        if entry.name.start_with? I18n.t("first_download")
+          sftp.download!("/#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+          sftp.remove!("/#{download_dir}/#{entry.name}")
         end
       end
     end
@@ -87,7 +83,7 @@ class FileHelper
     Express.from_zh_first_file_by_date(start_date)
   end
 
-    # 招行反馈核实结果（第2次取回）
+  # 招行反馈核实结果（第2次取回）
   def self.from_zh_second_file
     direct_r = I18n.t("from_zh_second_file_r_path")
     if !File.exist?(direct_r)
@@ -95,10 +91,10 @@ class FileHelper
     end
 
     Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-      sftp.dir.foreach("/ap2fct") do |entry|
-        if entry.longname.start_with? "OAPEM12D"
-          sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-          sftp.remove!("/ap2fct/#{entry.longname}")
+      sftp.dir.foreach("/#{download_dir}") do |entry|
+        if entry.name.start_with? I18n.t("second_download")
+          sftp.download!("/#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+          sftp.remove!("/#{download_dir}/#{entry.name}")
         end
       end
     end
