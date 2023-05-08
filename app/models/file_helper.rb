@@ -1,20 +1,19 @@
 class FileHelper
-  ftp_config = Rails.application.config_for(:ftp)
+  FTP_CONFIG = Rails.application.config_for(:ftp)
   
 
 	def self.sftp_upload(file_path_l, file_path_r)
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.upload!(file_path_l, file_path_r)
     end
   end
 
   def self.sftp_download(file_path_r, file_path_l)
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.download!(file_path_r, file_path_l)
     end
   end
 
-  #not use
   def self.sm4_encrypt_file(key, file_path_r, file_path_t = nil)
     file_path_t = "encrypt_#{file_path_r}" if file_path_t.blank?
     data = File.new(file_path_r).read
@@ -48,6 +47,7 @@ class FileHelper
   end
 
   # 生成文件（第1次上传）
+  
   def self.to_zh_first_file
     start_date = Date.today-1.days
     end_date = Date.today
@@ -63,6 +63,10 @@ class FileHelper
     self.sftp_upload(file_path_name[0], "/fct2ap/#{file_path_name[1]}")
   end
 
+  def self.get_zh_files
+
+  end
+
   # 招行反馈核实结果（第1次取回）
   def self.from_zh_first_file
     direct_r = I18n.t("from_zh_first_file_r_path")
@@ -70,10 +74,12 @@ class FileHelper
       Dir.mkdir(direct_r)          
     end
 
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.dir.foreach("/ap2fct") do |entry|
-        sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-        sftp.remove!("/ap2fct/#{entry.longname}")
+        if entry.longname.start_with? "OAPEM11D"
+          sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
+          sftp.remove!("/ap2fct/#{entry.longname}")
+        end
       end
     end
 
@@ -88,10 +94,12 @@ class FileHelper
       Dir.mkdir(direct_r)          
     end
 
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.dir.foreach("/ap2fct") do |entry|
-        sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-        sftp.remove!("/ap2fct/#{entry.longname}")
+        if entry.longname.start_with? "OAPEM12D"
+          sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
+          sftp.remove!("/ap2fct/#{entry.longname}")
+        end
       end
     end
     
