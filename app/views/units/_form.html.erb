@@ -43,7 +43,7 @@
   <!-- <div class="control-group">
     <%= f.label :parent_id, :class => 'control-label' %>
     <div class="controls">
-      <%= f.select(:parent_id, Unit.where("level in (1,2)").order(:level,:id).map{|u| [u.name,u.id]})%>
+      <%= f.select(:parent_id, Unit.where("unit_level in (1,2)").order(:unit_level,:id).map{|u| [u.name,u.id]})%>
     </div>
   </div>
    -->

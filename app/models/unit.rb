@@ -33,14 +33,14 @@ class Unit < ApplicationRecord
   end
 
   def is_parent?
-    level.blank? || level <= 1 
+    unit_level.blank? || unit_level <= 1 
   end
 
   def set_level
     if ! parent_unit.blank?
-      self.level = (parent_unit.level||1) + 1
+      self.unit_level = (parent_unit.unit_level||1) + 1
     else
-      self.level = 1
+      self.unit_level = 1
     end
   end
   # def delivery?

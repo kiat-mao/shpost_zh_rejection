@@ -12,8 +12,8 @@
   <dd><%= @unit.short_name %></dd>
   <dt><strong><%= model_class.human_attribute_name(:desc) %>:</strong></dt>
   <dd><%= @unit.desc %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:level) %>:</strong></dt>
-  <dd><%= @unit.level %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:unit_level) %>:</strong></dt>
+  <dd><%= @unit.unit_level %></dd>
   <dt><strong><%= model_class.human_attribute_name(:parent_unit) %>:</strong></dt>
   <dd><%= @unit.parent_unit.try(:name) %></dd>
  <!--  <dt><strong><%= model_class.human_attribute_name(:parent_id) %>:</strong></dt>

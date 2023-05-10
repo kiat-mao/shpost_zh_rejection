@@ -3,7 +3,7 @@
   <h1><%=t '.title', :default => [:'helpers.titles.index', '%{model} Manage'], :model => model_class.model_name.human.titleize %></h1>
   <%= render partial: '/layouts/page_size' %>
   
-  <!--% if current_user.unit.blank? or current_user.unit.level == 1 %-->
+  <!--% if current_user.unit.blank? or current_user.unit.unit_level == 1 %-->
   <% if ! params[:id].blank? %>
   <div style="float:right">
     <% if can? :new, Unit %>
@@ -42,15 +42,15 @@
   end
 
 
-  g.column name: model_class.human_attribute_name(:level), attribute: 'level', custom_filter: Unit::LEVEL.invert,  allow_multiple_selection: false  do |unit| 
-    unit.level
+  g.column name: model_class.human_attribute_name(:unit_level), attribute: 'unit_level', custom_filter: Unit::LEVEL.invert,  allow_multiple_selection: false  do |unit| 
+    unit.unit_level
   end
 
   g.column name: model_class.human_attribute_name(:unit_type), attribute: 'unit_type', allow_multiple_selection: false do |unit| 
     unit.unit_type
   end
   
-  g.column name: model_class.human_attribute_name(:parent_unit), attribute: 'parent_id' ,custom_filter: Unit.where(level: 1).accessible_by(current_ability).map{|u| [u.name,u.id]}, allow_multiple_selection: false do |unit|
+  g.column name: model_class.human_attribute_name(:parent_unit), attribute: 'parent_id' ,custom_filter: Unit.where(unit_level: 1).accessible_by(current_ability).map{|u| [u.name,u.id]}, allow_multiple_selection: false do |unit|
       unit.parent_unit.try(:name)
   end
   
@@ -61,11 +61,11 @@
 
   g.column do |unit|
     ActiveSupport::SafeBuffer.new << 
-      (link_to t("新增下级单位"), new_child_unit_unit_path(unit), :class => 'btn btn-xs btn-primary' if (can? :create, unit) && (unit[:level].eql? 1)) << ' ' << 
+      (link_to t("新增下级单位"), new_child_unit_unit_path(unit), :class => 'btn btn-xs btn-primary' if (can? :create, unit) && (unit[:unit_level].eql? 1)) << ' ' << 
       (link_to t('.edit', :default => t("helpers.links.edit")), edit_unit_path(unit), :class => 'btn btn-xs btn-primary' if can? :update, unit) << ' ' <<
       (link_to t('.destroy', :default => t("helpers.links.destroy")), unit_path(unit), :method => :delete, :data => { :confirm => t('wice_grid.saved_query_deletion_confirmation', :default => t("helpers.links.confirm", :default => '确定删除?')) }, :class => 'btn btn-xs btn-danger' if can? :destroy, unit) << ' ' <<
       (link_to t('.users', :default => t("helpers.links.users")), unit_users_path(unit), :class => 'btn btn-xs btn-info' if can? :user, unit) << ' ' << 
-      (link_to "下级单位", child_units_unit_path(unit), :class => 'btn btn-xs btn-primary' if (can? :read, unit) && (unit[:level].eql? 1))
+      (link_to "下级单位", child_units_unit_path(unit), :class => 'btn btn-xs btn-primary' if (can? :read, unit) && (unit[:unit_level].eql? 1))
   end
 end
 %>

@@ -82,7 +82,7 @@ class UnitsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def unit_params
-      params.require(:unit).permit(:no, :name, :desc, :short_name, :level, :parent_id, :unit_type)
+      params.require(:unit).permit(:no, :name, :desc, :short_name, :unit_level, :parent_id, :unit_type)
     end
 
     def unit_params_4_update

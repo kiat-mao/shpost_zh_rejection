@@ -13,13 +13,13 @@ zh-CN:
           needrole:
             can: :read
             role: :User
-        unit_admin:
-          name: "单位管理"
-          link: "/units"
-          need_count: false
-          needrole:
-            can: :read
-            role: :User
+        # unit_admin:
+        #   name: "单位管理"
+        #   link: "/units"
+        #   need_count: false
+        #   needrole:
+        #     can: :read
+        #     role: :User
     batch:
       name: "堆管理"
       needrole:

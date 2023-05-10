@@ -260,7 +260,7 @@ zh-CN:
         desc: "单位描述"
         short_name: "缩写"
         unit_type: "单位类别"
-        level: "级别"
+        unit_level: "级别"
         parent_unit: "上级单位"
         parent_id: "上级单位"
         # child_unit: "下级单位"
