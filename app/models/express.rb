@@ -28,7 +28,7 @@ class Express < ApplicationRecord
   end
 
   def self.to_zh_first_file_by_date(start_date, end_date)
-  	filename = "OAPEM11U#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
+  	filename = "#{I18n.t("first_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
     direct = I18n.t("to_zh_first_file_path")
 	    	
     if !File.exist?(direct)
@@ -56,7 +56,7 @@ class Express < ApplicationRecord
   end
 
   def self.to_zh_second_file_by_date(start_date, end_date)
-  	filename = "OAPEM12U#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
+  	filename = "#{I18n.t("second_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
     direct = I18n.t("to_zh_second_file_path")
 	    	
     if !File.exist?(direct)
@@ -92,7 +92,7 @@ class Express < ApplicationRecord
   	if !File.exist?(direct)
 	    Dir.mkdir(direct)          
 		end
-  	fname_start = "OAPEM11D"+fdate
+  	fname_start = I18n.t("first_download")+fdate
 
   	all_files = Dir.children(direct)
   	all_files.each do |f|
@@ -135,7 +135,7 @@ class Express < ApplicationRecord
   	if !File.exist?(direct_t)
 	    Dir.mkdir(direct_t)          
 		end
-		fname_start = "OAPEM12D"+fdate
+		fname_start = I18n.t("second_download")+fdate
   	
   	all_r_files = Dir.children(direct_r)
   	all_r_files.each do |f|

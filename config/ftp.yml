@@ -4,16 +4,21 @@ default: &default
 development:
   <<: *default
   ftp_ip: 10.126.41.144
-  username: miyaotest
-  password: SHp0st_BCL
+  username: shzh
+  password: shzh@0418
+  upload_dir: fct2ap
+  download_dir: ap2fct
 test:
   <<: *default
   ftp_ip: 10.126.41.144
-  username: miyaotest
-  password: SHp0st_BCL
-
+  username: shzh
+  password: shzh@0418
+  upload_dir: fct2ap
+  download_dir: ap2fct
 production:
   <<: *default
   ftp_ip: 10.126.41.144
-  username: miyaotest
-  password: SHp0st_BCL
+  username: shzh
+  password: shzh@0418
+  upload_dir: fct2ap
+  download_dir: ap2fct

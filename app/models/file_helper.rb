@@ -1,15 +1,15 @@
 class FileHelper
-  ftp_config = Rails.application.config_for(:ftp)
+  FTP_CONFIG = Rails.application.config_for(:ftp)
   
 
 	def self.sftp_upload(file_path_l, file_path_r)
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.upload!(file_path_l, file_path_r)
     end
   end
 
   def self.sftp_download(file_path_r, file_path_l)
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.download!(file_path_r, file_path_l)
     end
   end
@@ -51,16 +51,24 @@ class FileHelper
   def self.to_zh_first_file
     start_date = Date.today-1.days
     end_date = Date.today
+
+    upload_dir = "/#{FileHelper::FTP_CONFIG[:upload_dir]}"
+
     file_path_name = Express.to_zh_first_file_by_date(start_date, end_date)
-    self.sftp_upload(file_path_name[0], "/fct2ap/#{file_path_name[1]}")
+    self.sftp_upload(file_path_name[0], "#{upload_dir}/#{file_path_name[1]}")
+    Rails.logger.info("#{Time.now} zh_first_file upload #{file_path_name[1]}")
   end
 
   # 生成文件（第2次上传）
   def self.to_zh_second_file
     start_date = Date.today-1.days
     end_date = Date.today
+
+    upload_dir = "/#{FileHelper::FTP_CONFIG[:upload_dir]}"
+
     file_path_name = Express.to_zh_second_file_by_date(start_date, end_date)
-    self.sftp_upload(file_path_name[0], "/fct2ap/#{file_path_name[1]}")
+    self.sftp_upload(file_path_name[0], "#{upload_dir}/#{file_path_name[1]}")
+    Rails.logger.info("#{Time.now} zh_second_file upload #{file_path_name[1]}")
   end
 
   # 招行反馈核实结果（第1次取回）
@@ -70,10 +78,17 @@ class FileHelper
       Dir.mkdir(direct_r)          
     end
 
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
-      sftp.dir.foreach("/ap2fct") do |entry|
-        sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-        sftp.remove!("/ap2fct/#{entry.longname}")
+    download_dir = "/#{FileHelper::FTP_CONFIG[:download_dir]}"
+
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+      sftp.dir.foreach(download_dir) do |entry|
+        if entry.name.start_with? I18n.t("first_download")
+          sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+
+          Rails.logger.info("#{Time.now} zh_first_file download #{entry.name}")
+
+          sftp.remove!("#{download_dir}/#{entry.name}")
+        end
       end
     end
 
@@ -81,17 +96,24 @@ class FileHelper
     Express.from_zh_first_file_by_date(start_date)
   end
 
-    # 招行反馈核实结果（第2次取回）
+  # 招行反馈核实结果（第2次取回）
   def self.from_zh_second_file
     direct_r = I18n.t("from_zh_second_file_r_path")
     if !File.exist?(direct_r)
       Dir.mkdir(direct_r)          
     end
 
-    Net::SFTP.start(ftp_config[:ftp_ip], ftp_config[:username], :password => ftp_config[:password]) do |sftp|
-      sftp.dir.foreach("/ap2fct") do |entry|
-        sftp.download!("/ap2fct/#{entry.longname}", "#{direct_r}/#{entry.longname}")
-        sftp.remove!("/ap2fct/#{entry.longname}")
+    download_dir = "/#{FileHelper::FTP_CONFIG[:download_dir]}"
+
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+      sftp.dir.foreach("#{download_dir}") do |entry|
+        if entry.name.start_with? I18n.t("second_download")
+          sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+
+          Rails.logger.info("#{Time.now} zh_second_file download #{entry.name}")
+
+          sftp.remove!("#{download_dir}/#{entry.name}")
+        end
       end
     end
     
