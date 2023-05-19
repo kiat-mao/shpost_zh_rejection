@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1>退件扫描</h1>
 </div>
-<%= form_tag('', name: 'form1', method: 'post') do -%>
+<%= form_tag('', name: 'form1', method: 'post', remote: true) do -%>
 <%= hidden_field_tag('scaned_nos', "") %>
 <%= hidden_field_tag('htmls', "") %>
 <%= hidden_field_tag('num', 0) %>
@@ -18,7 +18,7 @@
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			<td><%= button_tag "重置",:class => 'btn btn-primary', :id => "reset", :type => "button"%></td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			<td><%= submit_tag "保存",:class => 'btn btn-primary', method: :post, :id => "return_save" %></td>
+			<td><%= button_tag "保存",:class => 'btn btn-primary', method: :post, :type => "button", :id => "return_save" %></td>
 		</tr>
 	</table>
 </div>

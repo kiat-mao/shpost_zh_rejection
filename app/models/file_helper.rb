@@ -55,8 +55,10 @@ class FileHelper
     upload_dir = "/#{FileHelper::FTP_CONFIG[:upload_dir]}"
 
     file_path_name = Express.to_zh_first_file_by_date(start_date, end_date)
-    self.sftp_upload(file_path_name[0], "#{upload_dir}/#{file_path_name[1]}")
-    Rails.logger.info("#{Time.now} zh_first_file upload #{file_path_name[1]}")
+    if !file_path_name.blank?
+      self.sftp_upload(file_path_name[0], "#{upload_dir}/#{file_path_name[1]}")
+      Rails.logger.info("#{Time.now} zh_first_file upload #{file_path_name[1]}")
+    end
   end
 
   # 生成文件（第2次上传）
@@ -67,8 +69,10 @@ class FileHelper
     upload_dir = "/#{FileHelper::FTP_CONFIG[:upload_dir]}"
 
     file_path_name = Express.to_zh_second_file_by_date(start_date, end_date)
-    self.sftp_upload(file_path_name[0], "#{upload_dir}/#{file_path_name[1]}")
-    Rails.logger.info("#{Time.now} zh_second_file upload #{file_path_name[1]}")
+    if !file_path_name.blank?
+      self.sftp_upload(file_path_name[0], "#{upload_dir}/#{file_path_name[1]}")
+      Rails.logger.info("#{Time.now} zh_second_file upload #{file_path_name[1]}")
+    end
   end
 
   # 招行反馈核实结果（第1次取回）

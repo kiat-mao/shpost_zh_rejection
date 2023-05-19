@@ -28,19 +28,22 @@ class Express < ApplicationRecord
   end
 
   def self.to_zh_first_file_by_date(start_date, end_date)
-  	filename = "#{I18n.t("first_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
-    direct = I18n.t("to_zh_first_file_path")
-	    	
-    if !File.exist?(direct)
-	    Dir.mkdir(direct)          
-		end
-
-    file_path = direct + filename 
-
+    file_path_name = nil
     results = Express.where("status=? and scaned_at>=? and scaned_at<?", "waiting", start_date, end_date)
-    to_zh_first_file_content_for(results, file_path)
-	   
-    return [file_path, filename]    
+    if !results.blank?
+    	filename = "#{I18n.t("first_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
+      direct = I18n.t("to_zh_first_file_path")
+  	    	
+      if !File.exist?(direct)
+  	    Dir.mkdir(direct)          
+  		end
+
+      file_path = direct + filename 
+      file_path_name = [file_path, filename]
+
+      to_zh_first_file_content_for(results, file_path)
+    end  
+    return file_path_name 
   end
 
   def self.to_zh_first_file_content_for(results, file_path)
@@ -56,19 +59,23 @@ class Express < ApplicationRecord
   end
 
   def self.to_zh_second_file_by_date(start_date, end_date)
-  	filename = "#{I18n.t("second_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
-    direct = I18n.t("to_zh_second_file_path")
-	    	
-    if !File.exist?(direct)
-	    Dir.mkdir(direct)          
-		end
-
-    file_path = direct + filename 
-
+    file_path_name = nil
     results = Express.where("status=? and scaned_at>=? and scaned_at<?", "done", start_date, end_date).order(:scaned_at, :express_no)
-    to_zh_second_file_content_for(results, file_path)
+    if !results.blank?
+    	filename = "#{I18n.t("second_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
+      direct = I18n.t("to_zh_second_file_path")
+  	    	
+      if !File.exist?(direct)
+  	    Dir.mkdir(direct)          
+  		end
+
+      file_path = direct + filename 
+      file_path_name = [file_path, filename]
+    
+      to_zh_second_file_content_for(results, file_path)
+    end
 	  
-    return [file_path, filename]    
+    return file_path_name    
   end
 
 

@@ -87,9 +87,11 @@ enterpress2 = ->
 				return false;
 			else
 				if Number($('#num').val()) <= 50
-					return_save()
-					clear()
+					return_save();
+					clear();
 					return false;
+		else
+			return false;
 
 return_save = -> 
 				$.ajax({
