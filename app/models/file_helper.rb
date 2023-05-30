@@ -77,7 +77,7 @@ class FileHelper
 
   # 招行反馈核实结果（第1次取回）
   def self.from_zh_first_file
-    direct_r = I18n.t("from_zh_first_file_r_path")
+    direct_r = I18n.t("from_zh_first_file_path")
     if !File.exist?(direct_r)
       Dir.mkdir(direct_r)          
     end
@@ -96,7 +96,7 @@ class FileHelper
       end
     end
 
-    start_date = Date.today-1.days
+    start_date = Date.yesterday
     Express.from_zh_first_file_by_date(start_date)
   end
 
@@ -121,7 +121,7 @@ class FileHelper
       end
     end
     
-    start_date = Date.today-1.days
+    start_date = Date.yesterday
     Express.from_zh_second_file_by_date(start_date)
   end
 end

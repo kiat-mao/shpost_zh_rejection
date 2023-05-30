@@ -101,36 +101,38 @@ class Express < ApplicationRecord
 		end
   	fname_start = I18n.t("first_download")+fdate
 
-  	all_files = Dir.children(direct)
-  	all_files.each do |f|
+  	# all_files = Dir.children(direct)
+  	Dir.children(direct).each do |f|
   		if f.start_with?fname_start
   			to_deal_files << f
   		end
   	end
 
-  	ActiveRecord::Base.transaction do
-	  	to_deal_files.each do |ff|
-	  		file_path = File.join(direct, ff)
-	  		
-	  		File.open(file_path, "r:UTF-8") do |file|
-	  			file.each_line do |line|
-	  				columns = line.split("!")
-	  				e = Express.find_by(express_no: columns[1], status: "uploaded")
-	  				if !e.blank?
-	  					if columns[3].eql?"02"
-	  						e.update anomaly: true, anomaly_desc: columns[4], status: "checked"
-	  					else
-	  						e.update status: "checked"
-	  					end  					
-	  				end
-	  			end
-	  		end
-	  	end
+	  to_deal_files.each do |ff|
+	  	file_path = File.join(direct, ff)
+	  	Express.from_zh_first_file(file_path)
 	  end
   end
 
+  def self.from_zh_first_file(file_path)
+    ActiveRecord::Base.transaction do
+  		File.open(file_path, "r:UTF-8") do |file|
+  			file.each_line do |line|
+  				columns = line.split("!")
+  				e = Express.find_by(express_no: columns[1], status: "uploaded")
+  				if !e.blank?
+  					if columns[3].eql?"02"
+  						e.update! anomaly: true, anomaly_desc: columns[4], status: "checked"
+  					else
+  						e.update! status: "checked"
+  					end  					
+  				end
+  			end
+  		end
+    end
+	end
+
   def self.from_zh_second_file_by_date(start_date)
-  	batches = []
   	to_deal_r_files = []
   	fdate = start_date.strftime('%Y%m%d')
 
@@ -138,43 +140,53 @@ class Express < ApplicationRecord
   	if !File.exist?(direct_r)
 	    Dir.mkdir(direct_r)          
 		end
-  	direct_t = I18n.t("from_zh_second_file_t_path")
-  	if !File.exist?(direct_t)
-	    Dir.mkdir(direct_t)          
-		end
+  
 		fname_start = I18n.t("second_download")+fdate
   	
-  	all_r_files = Dir.children(direct_r)
-  	all_r_files.each do |f|
+  	# all_r_files = Dir.children(direct_r)
+  	Dir.children(direct_r).each do |f|
   		if f.start_with? fname_start
   			to_deal_r_files << f
   		end
   	end
 
-  	ActiveRecord::Base.transaction do
-	  	to_deal_r_files.each do |ff|
-	  		file_path_r = File.join(direct_r, ff)
-	  		file_path_t = File.join(direct_t, "decrypt_#{ff}")
-	  		FileHelper.sm4_decrypt_file("EMWL888888888888", file_path_r, file_path_t)
+  	to_deal_r_files.each do |ff|
+  		file_path_r = File.join(direct_r, ff)
+      Express.from_zh_second_file(file_path_r)
+  	end
+  end
 
-	  		File.open(file_path_t, "r:UTF-8") do |file|
-	  		# File.open(file_path_r, "r:UTF-8") do |file|
-	  			file.each_line do |line|
-	  				columns = line.split("!")
-	  				e = Express.find_by(express_no: columns[0], status: "checked")
-	  				if !e.blank?
-	  					batches << e.batch_id if !(batches.include?e.batch_id)
-	  				
-	  					if ["01", "02"].include?columns[1]
-	  						e.update deal_require: columns[1], status: "pending", address_status: "address_waiting", receiver_postcode: columns[2], receiver_addr: columns[3], receiver_name: columns[4], receiver_phone: columns[5]
-	  					else
-	  						e.update deal_require: columns[1], status: "pending"#, address_status: "address_waiting"
-	  					end
-	  				end
-	  			end
-	  		end
-	  		Batch.where(id: batches).update_all status: "pending" if !batches.blank?
-	  	end
-	  end
+  def self.from_zh_second_file(file_path_r)
+    ActiveRecord::Base.transaction do
+      batches = []
+
+      direct_t = I18n.t("from_zh_second_file_t_path")
+      if !File.exist?(direct_t)
+        Dir.mkdir(direct_t)          
+      end
+
+      file_name_r = file_path_r.split("/").last
+
+      file_path_t = File.join(direct_t, "decrypt_#{file_name_r}")
+      FileHelper.sm4_decrypt_file("EMWL888888888888", file_path_r, file_path_t)
+
+      File.open(file_path_t, "r:UTF-8") do |file|
+      # File.open(file_path_r, "r:UTF-8") do |file|
+        file.each_line do |line|
+          columns = line.split("!")
+          e = Express.find_by(express_no: columns[0], status: "checked")
+          if !e.blank?
+            batches << e.batch_id if !(batches.include?e.batch_id)
+          
+            if ["01", "02"].include?columns[1]
+              e.update! deal_require: columns[1], status: "pending", address_status: "address_waiting", receiver_postcode: columns[2], receiver_addr: columns[3], receiver_name: columns[4], receiver_phone: columns[5]
+            else
+              e.update! deal_require: columns[1], status: "pending"#, address_status: "address_waiting"
+            end
+          end
+        end
+      end
+      Batch.where(id: batches).each{|x| x.update! status: "pending" }  
+    end
   end
 end
