@@ -78,7 +78,7 @@ class ExpressesController < ApplicationController
   		scaned_nos = params["scaned_nos"].split(",")
   		batch = Batch.create! name: params["batch_name"], status: "waiting", operator1: current_user.id
   		scaned_nos.each do |s|
-  			batch.expresses.create! express_no: s, scaned_at: Time.now, status: "waiting", operator1: current_user.id
+  			batch.expresses.create! express_no: s, scaned_at: Time.now, status: "waiting", operator1: current_user.id, sender_province: "上海", sender_city: "上海", sender_district: "浦东新区", sender_addr: "上海浦东新区上海邮政120-058信箱", sender_name: "招商银行信用卡中心", sender_phone: "4008205555"
   		end
   	end
   	flash[:notice] = "保存成功"		
@@ -99,14 +99,14 @@ class ExpressesController < ApplicationController
   	if @express.blank?
   		@deal_require = "not_found"
   	else
+      # 03退回卡厂,05退回卡厂成功
+      if @express.deal_require.eql?"03"
+        @express.update status: "done", deal_result: "05", operator2: current_user.id, scaned_at: Time.now
+      end
   		if !@express.address_status.eql?"address_success"
   			@deal_require = "address_failed"
   		else
-  			@deal_require = @express.deal_require
-  			# 03退回卡厂,05退回卡厂成功
-  			if @deal_require.eql?"03"
-  				@express.update status: "done", deal_result: "05", operator2: current_user.id, scaned_at: Time.now
-  			end
+  			@deal_require = @express.deal_require  			
   		end
   	end
   end
