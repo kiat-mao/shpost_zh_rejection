@@ -107,13 +107,6 @@ enterpress3 = (e) ->
 		if ($('#resend_express_no').val() != "")
 			find_resend_express_result()
 			return false;
-		else
-			if ($('#last_express_no').val() != "")
-				$('#resend_express_no').blur();
-				showMask()
-				get_new_express_no_and_print()
-				$('#resend_express_no').attr("disabled","disabled");
-				return false;
 
 find_resend_express_result = -> 
 				$.ajax({
@@ -123,13 +116,6 @@ find_resend_express_result = ->
 					dataType : 'script'
 				});
 
-get_new_express_no_and_print = ->
-				$.ajax({
-					type : 'POST',
-					url : '../expresses/get_new_express_no_and_print/',
-					data: { last_express_no: $('#last_express_no').val()},
-					dataType : 'script'
-				});
 
 showMask = ->
 	document.getElementById('mid').style.display="block";

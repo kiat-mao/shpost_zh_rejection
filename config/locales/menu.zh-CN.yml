@@ -74,7 +74,7 @@ zh-CN:
             can: :return_scan
             role: :Express
         resend_scan:
-          name: "重寄扫描"  
+          name: "二次扫描"  
           link: "/expresses/resend_scan"
           need_count: false
           needrole:

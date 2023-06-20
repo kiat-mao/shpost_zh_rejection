@@ -9,7 +9,12 @@ class ExpressesController < ApplicationController
   	end
   	
     @expresses_grid = initialize_grid(@expresses,
-         :per_page => params[:page_size])
+      :per_page => params[:page_size],
+      name: 'expresses',
+      :enable_export_to_csv => true,
+      :csv_file_name => 'expresses',
+      :csv_encoding => 'gbk')
+    export_grid_if_requested
   end
 
   # 异常邮件处理
@@ -101,13 +106,15 @@ class ExpressesController < ApplicationController
   	else
       # 03退回卡厂,05退回卡厂成功
       if @express.deal_require.eql?"03"
+        @deal_require = "03"
         @express.update status: "done", deal_result: "05", operator2: current_user.id, scaned_at: Time.now
+      else
+    		if !@express.address_status.eql?"address_success"
+    			@deal_require = "address_failed"
+    		else
+    			@deal_require = @express.deal_require  			
+    		end
       end
-  		if !@express.address_status.eql?"address_success"
-  			@deal_require = "address_failed"
-  		else
-  			@deal_require = @express.deal_require  			
-  		end
   	end
   end
 

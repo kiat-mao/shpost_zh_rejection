@@ -14,8 +14,16 @@ $('#resend_express_no').blur();
 <% elsif ["01", "02"].include?@deal_require %>
 	var audio = document.getElementById("resend_alert");
 	audio.play();
-	alert("邮件需重寄");
-	$('#last_express_no').val("<%= @resend_express_no %>");
+	if(confirm("邮件需重寄")){
+		$('#last_express_no').val("<%= @resend_express_no %>");
+		if($('#last_express_no').val() != ""){
+			$('#resend_express_no').blur();
+			showMask();
+			get_new_express_no_and_print();
+			$('#resend_express_no').attr("disabled","disabled");
+		}
+	}
+	
 	// if(confirm("是否打印面单？")){
 	// 	window.open("../expresses/tkzd?express_id="+<%= Express.find_by(express_no: @resend_express_no).id %>);
 	// 	$('#resend_express_no').blur();
@@ -29,6 +37,15 @@ $('#new_express_no').text("");
 $('#route_code').text("");
 $('#resend_express_no').focus();
 
-// function showMask(){
-// 	document.getElementById('mid').style.display="block";
-// }
+function showMask(){
+	document.getElementById('mid').style.display="block";
+}
+
+function get_new_express_no_and_print(){
+	$.ajax({
+					type : 'POST',
+					url : '../expresses/get_new_express_no_and_print/',
+					data: { last_express_no: $('#last_express_no').val()},
+					dataType : 'script'
+				});
+}
