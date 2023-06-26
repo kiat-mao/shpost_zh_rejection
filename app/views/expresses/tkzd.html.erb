@@ -19,10 +19,11 @@
         window.open("install_lodop32.exe");
     }
     LODOP.SET_LICENSES("上海市邮政公司信息技术局","452677782688188907989821905623","","");
+
     <% @result.sort_by{|x| x.express_no.upcase}.each do |express| %>
     LODOP.PRINT_INITA("2mm","1mm","100mm","150mm","打印特快专递单");
     LODOP.SET_PRINT_PAGESIZE(1,1000,1500,"tkzd");
-
+    <% #byebug %>
     LODOP.ADD_PRINT_TEXT("14mm","11mm","30mm","8mm","标准快递");
     LODOP.SET_PRINT_STYLEA(0,"FontSize",14);
     LODOP.SET_PRINT_STYLEA(0,"Bold",1);
@@ -75,12 +76,13 @@
     LODOP.SET_PRINT_STYLEA(0,"Bold",1);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
     
-    LODOP.ADD_PRINT_TEXT("54mm","4mm","50mm","5mm","电话: <%= express.receiver_phone[0,3] %>****<%= express.receiver_phone[express.receiver_phone.length-4,4] %>");   
+    <% receiver_phone = express.receiver_phone.blank? ? "" : (express.receiver_phone.chomp[0,3]+"****"+express.receiver_phone.chomp[express.receiver_phone.chomp.length-4,4]) %>
+    LODOP.ADD_PRINT_TEXT("54mm","4mm","50mm","5mm","电话: <%= receiver_phone %>");   
     LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
     LODOP.SET_PRINT_STYLEA(0,"Bold",0);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
     
-    LODOP.ADD_PRINT_TEXT("54mm","50mm","50mm","5mm","收件人邮编: <%= express.receiver_postcode %>");   
+    LODOP.ADD_PRINT_TEXT("54mm","50mm","50mm","5mm","收件人邮编: <%= express.try(:receiver_postcode) %>");   
     LODOP.SET_PRINT_STYLEA(0,"FontSize",8);
     LODOP.SET_PRINT_STYLEA(0,"Bold",0);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
@@ -138,7 +140,7 @@
     LODOP.SET_PRINT_STYLEA(0,"Bold",1);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");
     
-    LODOP.ADD_PRINT_TEXT("106mm","54mm","50mm","7mm","电话:   <%= express.receiver_phone[0,3] %>****<%= express.receiver_phone[express.receiver_phone.length-4,4] %>");
+    LODOP.ADD_PRINT_TEXT("106mm","54mm","50mm","7mm","电话:   <%= receiver_phone %>");
     LODOP.SET_PRINT_STYLEA(0,"FontSize",12);
     LODOP.SET_PRINT_STYLEA(0,"Bold",0);
     LODOP.SET_PRINT_STYLEA(0,"FontName","黑体");

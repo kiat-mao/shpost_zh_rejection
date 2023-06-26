@@ -5,16 +5,18 @@ class ExpressesController < ApplicationController
   # 邮件管理
   def index
   	if !params[:batch_id].blank?
-  		@expresses = Express.where(batch_id: params[:batch_id]).order("scaned_at desc, express_no asc")
+  		@expresses = Express.where(batch_id: params[:batch_id]).order("scaned_at desc")
   	end
   	
-    @expresses_grid = initialize_grid(@expresses,
+    @expresses_grid = initialize_grid(@expresses.order("scaned_at desc"),
       :per_page => params[:page_size],
-      name: 'expresses',
-      :enable_export_to_csv => true,
-      :csv_file_name => 'expresses',
-      :csv_encoding => 'gbk')
-    export_grid_if_requested
+      name: 'expresses'
+      # ,
+      # :enable_export_to_csv => true,
+      # :csv_file_name => 'expresses',
+      # :csv_encoding => 'gbk'
+      )
+    # export_grid_if_requested
   end
 
   # 异常邮件处理
@@ -57,13 +59,14 @@ class ExpressesController < ApplicationController
   	if !@express_id.blank?
   		@result << Express.find(@express_id)
   	else
-	  	if !params[:selected].blank?
-	      selected = params[:selected].split(",")
+	  	if !params[:expresses].blank? && !params[:expresses][:selected].blank?
+	      # selected = params[:expresses][:selected].split(",")
+        selected = params[:expresses][:selected]
 	       
 	      until selected.blank? do 
 	        @result += Express.where(id:selected.pop(1000))
 	      end
-	  	else
+      else
 	      flash[:alert] = "请勾选需要打印的邮件"
 	      respond_to do |format|
 	        format.html { redirect_to request.referer }
@@ -212,11 +215,140 @@ class ExpressesController < ApplicationController
     end
 	end
 
+  def express_export
+    expresses = filter_expresses(@expresses,params)
+    
+    if expresses.blank?
+      flash[:alert] = "无数据"
+      redirect_to :action => 'index'
+    else
+      send_data(express_xls_content_for(expresses.order("scaned_at desc")), :type => "text/excel;charset=utf-8; header=present", :filename => "数据_#{Time.now.strftime("%Y%m%d")}.xls")  
+    end
+  end
+
+  def filter_expresses(expresses, params)
+    start_date = nil
+    end_date = nil
+    expresses = expresses.left_joins(:batch)
+
+    if !params[:expresses].blank?
+      if !params[:expresses][:f].blank?
+        params_f = params[:expresses][:f]
+        if !params_f[:express_no].blank?
+          expresses = expresses.where("express_no like ?", '%'+params_f[:express_no]+'%')
+        end
+
+        if !params_f[:scaned_at][:fr].blank?
+          start_date = params_f[:scaned_at][:fr] 
+          expresses = expresses.where("scaned_at >= ?", start_date)
+        end
+
+        if !params_f[:scaned_at][:to].blank?
+          end_date = params_f[:scaned_at][:to].to_date+1.day 
+          expresses = expresses.where("scaned_at < ?", end_date)
+        end
+
+        if !params_f['batches.name'].blank?
+          batch_name = params_f['batches.name']
+          expresses = expresses.where("batches.name like ?", '%'+batch_name+'%')
+        end
+        
+        if !params_f[:anomaly][0].blank?
+          expresses = expresses.where(anomaly: params_f[:anomaly][0])
+        end
+
+        if !params_f[:status].blank?
+          if !params_f[:status][0].blank?
+            expresses = expresses.where(status: params_f[:status][0])
+          end
+        end
+
+        if !params_f[:deal_require].blank?
+          if !params_f[:deal_require][0].blank?
+            expresses = expresses.where(deal_require: params_f[:deal_require][0])
+          end
+        end
+
+        if !params_f[:deal_result].blank?
+          if !params_f[:deal_result][0].blank?
+            expresses = expresses.where(deal_result: params_f[:deal_result][0])
+          end
+        end
+
+        if !params_f[:new_express_no].blank?
+          expresses = expresses.where("new_express_no like ?", '%'+params_f[:new_express_no]+'%')
+        end
+
+        if !params_f[:receiver_name].blank?
+          expresses = expresses.where("receiver_name like ?", '%'+params_f[:receiver_name]+'%')
+        end
+
+        if !params_f[:receiver_phone].blank?
+          expresses = expresses.where("receiver_phone like ?", '%'+params_f[:receiver_phone]+'%')
+        end
+
+        if !params_f[:receiver_addr].blank?
+          expresses = expresses.where("receiver_addr like ?", '%'+params_f[:receiver_addr]+'%')
+        end
+
+        if !params_f[:receiver_postcode].blank?
+          expresses = expresses.where("receiver_postcode like ?", '%'+params_f[:receiver_postcode]+'%')
+        end
+
+        if !params_f[:operator1].blank?
+          if !params_f[:operator1][0].blank?
+            expresses = expresses.where(operator1: params_f[:operator1][0])
+          end
+        end
+
+        if !params_f[:operator2].blank?
+          if !params_f[:operator2][0].blank?
+            expresses = expresses.where(operator2: params_f[:operator2][0])
+          end
+        end
+      end
+    end
+    
+    return expresses
+  end
+
+  def express_xls_content_for(objs)  
+    xls_report = StringIO.new  
+    book = Spreadsheet::Workbook.new  
+    sheet1 = book.create_worksheet :name => "数据"  
+  
+    blue = Spreadsheet::Format.new :color => :blue, :weight => :bold, :size => 10  
+    sheet1.row(0).default_format = blue  
+
+    sheet1.row(0).concat %w{原运单号 扫描时间 堆名 是否异常 状态 处理方式 处理结果 新运单号 收件人姓名 收件人电话 收件人地址 收件人邮编 退件扫描员 重寄扫描员} 
+    count_row = 1
+    objs.each do |obj|  
+      sheet1[count_row,0]=obj.express_no
+      sheet1[count_row,1]=obj.scaned_at.blank? ? "" : obj.scaned_at.strftime('%Y-%m-%d').to_s
+      sheet1[count_row,2]=obj.batch.try(:name)
+      sheet1[count_row,3]=obj.anomaly? ? "是" : "否"
+      sheet1[count_row,4]=obj.status_name
+      sheet1[count_row,5]=obj.deal_require.blank? ? "" : obj.deal_require_name
+      sheet1[count_row,6]=obj.deal_result.blank? ? "" : obj.deal_result_name
+      sheet1[count_row,7]=obj.try(:new_express_no)
+      sheet1[count_row,8]=obj.try(:receiver_name)
+      sheet1[count_row,9]=obj.try(:receiver_phone)
+      sheet1[count_row,10]=obj.try(:receiver_addr)
+      sheet1[count_row,11]=obj.try(:receiver_postcode)
+      sheet1[count_row,12]=obj.operator1.blank? ? "" : User.find(obj.operator1).name
+      sheet1[count_row,13]=obj.operator2.blank? ? "" : User.find(obj.operator2).name
+      
+      count_row += 1
+    end
+
+    book.write xls_report  
+    xls_report.string  
+  end
 	
 	private
 
 	def express_params
-    params.require(:express).permit(:receiver_province, :receiver_city, :receiver_district, :receiver_addr)
+    params.require(:express).permit(:receiver_province, :receiver_city, :receiver_district, :receiver_addr, :receiver_name, :receiver_phone, :receiver_postcode, :express_no, :scaned_at, :batch_id, :anomaly, :status, :deal_require, :deal_result, :new_express_no, :operator1, :operator2)
   end
 
 end
