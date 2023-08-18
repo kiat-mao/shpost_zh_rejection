@@ -20,7 +20,7 @@ class FileHelper
     data = File.new(file_path_r).read
     data_encrypt = sm4_encrypt(key, Base64.encode64(data))
     file = File.new(file_path_t, "w+:gbk")
-    file.puts data_decrypt.force_encoding('gbk')
+    file.puts data_decrypt.force_encoding('utf-8')
     file.close
   end
 
@@ -29,7 +29,7 @@ class FileHelper
     data = File.new(file_path_r).read
     data_decrypt = sm4_decrypt(key, data)
     file = File.new(file_path_t, "w+")
-    file.puts data_decrypt.force_encoding('gbk')
+    file.puts data_decrypt.force_encoding('utf-8')
     file.close
   end
 
