@@ -47,5 +47,10 @@
       express.operator2.blank? ? "" : User.find(express.operator2).name
     end
 
+    g.column do |express|
+      ActiveSupport::SafeBuffer.new << 
+        (link_to t('.destroy', :default => t("helpers.links.destroy")), express_path(express), :method => :delete, :data => { :confirm => t('wice_grid.saved_query_deletion_confirmation', :default => t("helpers.links.confirm", :default => '确定删除?')) }, :class => 'btn btn-xs btn-danger' if (can? :destroy, express) && (express.status.eql?"waiting"))
+    end
+
   end 
   %>

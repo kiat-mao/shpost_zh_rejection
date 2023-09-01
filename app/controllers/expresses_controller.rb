@@ -51,6 +51,18 @@ class ExpressesController < ApplicationController
     end
   end
 
+  def destroy
+    if @express.status.eql?"waiting"
+      @express.destroy
+    else
+      flash[:alert] = " 该邮件不可删除。"
+    end
+    respond_to do |format|
+      format.html { redirect_to expresses_url }
+      format.json { head :no_content }
+    end
+  end
+
   # 打印
   def tkzd
   	@result = []
