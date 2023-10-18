@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_08_062848) do
+ActiveRecord::Schema.define(version: 2023_10_18_071327) do
 
   create_table "batches", force: :cascade do |t|
     t.string "name"
     t.string "status"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "operator1"
   end
 
   create_table "expresses", force: :cascade do |t|
@@ -49,6 +50,8 @@ ActiveRecord::Schema.define(version: 2023_02_08_062848) do
     t.string "address_status"
     t.integer "batch_id"
     t.boolean "no_modify", default: false
+    t.integer "operator1"
+    t.integer "operator2"
     t.index ["express_no"], name: "index_expresses_on_express_no"
     t.index ["new_express_no"], name: "index_expresses_on_new_express_no"
   end
@@ -82,6 +85,28 @@ ActiveRecord::Schema.define(version: 2023_02_08_062848) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.string "express_no"
+    t.string "sender_province"
+    t.string "sender_city"
+    t.string "sender_district"
+    t.string "sender_addr"
+    t.string "sender_name"
+    t.string "sender_phone"
+    t.string "receiver_province"
+    t.string "receiver_city"
+    t.string "receiver_district"
+    t.string "receiver_postcode"
+    t.string "receiver_addr"
+    t.string "receiver_name"
+    t.string "receiver_phone"
+    t.string "status"
+    t.string "address_status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["express_no"], name: "index_orders_on_express_no"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.integer "user_id"
     t.integer "unit_id"
@@ -95,7 +120,7 @@ ActiveRecord::Schema.define(version: 2023_02_08_062848) do
     t.string "desc"
     t.string "no"
     t.string "short_name"
-    t.integer "level"
+    t.integer "unit_level"
     t.integer "parent_id"
     t.string "unit_type"
     t.datetime "created_at", precision: 6, null: false
