@@ -1,16 +1,16 @@
-<%- model_class = Express -%>
+<%- model_class = Order -%>
 <div class="page-header">
-<h1>退件改址</h1>
+<h1>发卡信息改址</h1>
   <div><%= render partial: '/layouts/page_size' %></div>
 </div>
 <div align='right'>
   <%= submit_tag "无需修改",:class => 'btn btn-primary', onclick: "form1.action='set_no_modify';form1.submit();" %>
-  <%= submit_tag "筛选异地邮件",:class => 'btn btn-primary', onclick: "form1.action='change_express_addr?abnormal=true';form1.submit();" %>
+  <%= submit_tag "筛选异地邮件",:class => 'btn btn-primary', onclick: "form1.action='change_order_addr?abnormal=true';form1.submit();" %>
 </div>
 
 
 <%= form_tag('', name: 'form1') do %>
-<%= grid(@expresses_grid) do |g|
+<%= grid(@orders_grid) do |g|
   g.action_column select_all_buttons: true
 
 	g.column name: model_class.human_attribute_name(:express_no), attribute: 'express_no'
@@ -27,17 +27,17 @@
 
 	g.column name: model_class.human_attribute_name(:receiver_phone), attribute: 'receiver_phone'
 
-	g.column name: "邮件日期", attribute: 'created_at' do |express|
-    l express.created_at
+	g.column name: "邮件日期", attribute: 'created_at' do |order|
+    l order.created_at
   end
 
-  g.column name: model_class.human_attribute_name(:address_status), attribute: 'address_status',custom_filter: Express::ADDRESS_STATUS_NAME.invert do |express| 
-      express.address_status_name
+  g.column name: model_class.human_attribute_name(:address_status), attribute: 'address_status',custom_filter: Order::ADDRESS_STATUS_NAME.invert do |order| 
+      order.address_status_name
     end
 
-  g.column do |express|
+  g.column do |order|
     ActiveSupport::SafeBuffer.new << 
-    (link_to t('.edit', :default => t("helpers.links.edit")), edit_express_path(express), target: '_blank', :class => 'btn btn-xs btn-primary' if (can? :update, express))
+    (link_to t('.edit', :default => t("helpers.links.edit")), edit_order_path(order), target: '_blank', :class => 'btn btn-xs btn-primary' if (can? :update, order))
   end
 
 end 

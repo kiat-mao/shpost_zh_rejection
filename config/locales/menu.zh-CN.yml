@@ -47,7 +47,7 @@ zh-CN:
             can: :read
             role: :Express
         change_express_addr:
-          name: "邮件改址"  
+          name: "退件改址"  
           link: "/expresses/change_express_addr"
           need_count: false
           needrole:
@@ -60,6 +60,13 @@ zh-CN:
           needrole:
             can: :anomaly_index
             role: :Express
+        change_order_addr:
+          name: "发卡信息改址"  
+          link: "/orders/change_order_addr"
+          need_count: false
+          needrole:
+            can: :change_order_addr
+            role: :Order
     express_scan:
       name: "邮件扫描"
       needrole:

@@ -239,6 +239,9 @@ zh-CN:
       batch:
         one: 堆
         other: 堆
+      order:
+        one: 邮件
+        other: 邮件
     attributes:
       user:
         email: "电子邮件"
@@ -323,6 +326,23 @@ zh-CN:
         status: "状态"
         created_at: "创建时间"
         operator1: "退件扫描员"
+      order:
+        express_no: "邮件号"
+        sender_province: "寄件人省"
+        sender_city: "寄件人市"
+        sender_district: "寄件人区"
+        sender_addr: "寄件人地址"
+        sender_name: "寄件人姓名"
+        sender_phone: "寄件人电话"
+        receiver_province: "收件人省"
+        receiver_city: "收件人市"
+        receiver_district: "收件人区"
+        receiver_postcode: "收件人邮编"
+        receiver_addr: "收件人地址"
+        receiver_name: "收件人姓名"
+        receiver_phone: "收件人电话"
+        status: "状态"
+        address_status: "地址解析状态"
   user_navigation:
     update_self: "个人信息"
     show_unit: "单位信息"
@@ -335,6 +355,7 @@ zh-CN:
     check: "确认"
     close: "关闭"
 
+# 招行退件
   to_zh_first_file_path: "../shpost_zh_rejection/public/to_zh_first_file/"
   to_zh_second_file_path: "../shpost_zh_rejection/public/to_zh_second_file/"
   from_zh_first_file_path: "../shpost_zh_rejection/public/from_zh_first_file/"
@@ -344,3 +365,10 @@ zh-CN:
   second_upload: "OAPEM12U"
   first_download: "OAPEM11D"
   second_download: "OAPEM12D"
+
+# 招行订单(金邦达，捷德)
+  orders_r_path: "../shpost_zh_rejection/public/orders_r/"
+  orders_t_path: "../shpost_zh_rejection/public/orders_t/"
+  download_file_start: 
+    - "JBDS"
+    - "JDSH"

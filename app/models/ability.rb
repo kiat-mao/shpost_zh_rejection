@@ -14,6 +14,7 @@ class Ability
         can :manage, UpDownload
         can :manage, Express
         can :manage, Batch
+        can :manage, Order
         #can :manage, User
     elsif user.unitadmin?
         can :manage, Unit, id: user.unit.id
@@ -35,6 +36,8 @@ class Ability
         can :manage, Express
 
         can :manage, Batch
+
+        can :manage, Order
     else
         can :update, User, id: user.id
         can :read, UserLog, user: {id: user.id}
@@ -46,6 +49,9 @@ class Ability
         cannot :change_express_addr, Express
 
         can :read, Batch
+
+        can :manage, Order
+        cannot :change_order_addr, Order
     end
 
     

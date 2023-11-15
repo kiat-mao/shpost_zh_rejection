@@ -74,6 +74,15 @@ Rails.application.routes.draw do
       post 'done' => 'batches#done'
     end
   end
+
+  resources :orders do
+    collection do 
+      get 'change_order_addr'
+      post 'change_order_addr'
+      get 'set_no_modify'
+      post 'set_no_modify'
+    end
+  end
     
 
 

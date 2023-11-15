@@ -39,8 +39,10 @@ enterpress = (e) ->
 			if ($('#scaned_nos').val() != "") && (Number($('#num').val()) > 50)
 				alert("50个邮件已满，请保存"); 
 			else
-				if (isNaN($('#express_no').val())) || ($('#express_no').val().length != 13)
-					alert("请输入13位纯数字");
+				Regx = /^[A-Za-z0-9]*$/;
+			
+				if !Regx.test($('#express_no').val()) || ($('#express_no').val().length != 13)
+					alert("请输入13位数字或字母");
 				else
 					if ($('#scaned_nos').val().search($('#express_no').val())!=-1)
 						alert("不可重复扫描");
