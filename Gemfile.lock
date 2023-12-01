@@ -9,7 +9,7 @@ GIT
       rails (>= 5.0, < 7)
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     actioncable (6.0.5.1)
       actionpack (= 6.0.5.1)
@@ -114,6 +114,8 @@ GEM
       sassc (>= 1.11)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    gpgme (2.0.23)
+      mini_portile2 (~> 2.7)
     httpclient (2.8.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
@@ -155,6 +157,7 @@ GEM
     matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
+    mini_portile2 (2.8.5)
     minitest (5.16.2)
     momentjs-rails (2.29.4.1)
       railties (>= 3.1)
@@ -296,6 +299,7 @@ DEPENDENCIES
   capybara (>= 2.15)
   devise (~> 4.7, >= 4.7.1)
   font-awesome-sass (~> 5.13.0)
+  gpgme (~> 2.0, >= 2.0.23)
   httpclient (~> 2.8, >= 2.8.3)
   jbuilder (~> 2.7)
   jquery-rails (~> 4.4)

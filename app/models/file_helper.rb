@@ -14,6 +14,29 @@ class FileHelper
     end
   end
 
+
+  #gpg解密
+  def self.gpg_decrypt_file(password, file_path_r, file_path_t = nil)
+    file_path_t = file_path_r.gsub(File.extname(file_path_r), '') if file_path_t.blank?
+    # 解密
+    crypto = GPGME::Crypto.new(:password => password)
+    File.open(file_path_t, "w") do |file|
+      decrypt_data = crypto.decrypt File.open(file_path_r)
+      file.write decrypt_data.to_s.force_encoding("utf-8")
+    end
+  end
+
+  # 解压RAR文件的函数
+  def self.extract_rar(file_path, destination_path = nil)
+    destination_path = file_path.gsub(File.extname(file_path), '') if destination_path.blank?
+    # 确保目标路径存在
+    FileUtils.mkdir_p(destination_path) unless File.exist?(destination_path)
+
+    # 调用unrar命令
+    system("unrar x -y #{file_path.shellescape} #{destination_path.shellescape}")
+  end
+
+
   #not use
   def self.sm4_encrypt_file(key, file_path_r, file_path_t = nil)
     file_path_t = "encrypt_#{file_path_r}" if file_path_t.blank?

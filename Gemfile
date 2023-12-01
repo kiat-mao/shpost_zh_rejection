@@ -1,4 +1,4 @@
-source 'https://rubygems.org/'
+source 'http://rubygems.org/'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.5'
@@ -93,6 +93,8 @@ gem 'whenever', '~> 1.0'
 gem 'net-sftp', '~> 2.1.3.rc3'
 
 gem 'httpclient', '~> 2.8', '>= 2.8.3'
+
+gem 'gpgme', '~> 2.0', '>= 2.0.23'
 
 ########Oracle##############
 # gem 'ruby-oci8'
