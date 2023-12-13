@@ -23,6 +23,7 @@ development:
   ap_system_name: test
   ap_pwd: "11111"
   ap_salt: ""
+  order_create_by_waybill_no_url: http://222.66.108.206:4000/xyd_server/OrderCreateByWaybillNoServlet
 test:
   <<: *default
   # order create
@@ -45,10 +46,12 @@ test:
   ap_system_name: test
   ap_pwd: "11111"
   ap_salt: ""
+  order_create_by_waybill_no_url: http://10.126.25.218:7001/xyd_server/OrderCreateByWaybillNoServlet
 production:
   <<: *default
   # order create
-  order_create_url: http://172.20.7.11:3000/xyd_server/OrderCreateServlet
+  #order_create_url: http://172.20.7.11:3000/xyd_server/OrderCreateServlet
+  order_create_url: http://10.126.25.138:7001/xyd_server/OrderCreateServlet
   oc_system_name: syhs2022
   oc_pwd: M3Q5NGREcjB0NE9zOCk5
   ecCompanyId: SHYIYAO
@@ -63,7 +66,11 @@ production:
   base_product_no_3: "3" #到付
   payment_mode_2: "2"
   # address parsing
-  address_parsing_url: http://172.20.7.11:3000/xyd_server/AddressParsingServlet
+  #address_parsing_url: http://172.20.7.11:3000/xyd_server/AddressParsingServle
+  address_parsing_url: http://10.126.25.138:7001/xyd_server/AddressParsingServlet
   ap_system_name: syhs2022
   ap_pwd: c2h5eWFkZHJlc3NwYXJzaW5n
   ap_salt: 23e1691cb0a5e42bd8236b4ea794bf0c
+  o#rder_create_by_waybill_no_url: http://172.20.7.11:3000/yd_server/OrderCreateByWaybillNoServlet
+  order_create_by_waybill_no_url: http://10.126.25.138:7001/xyd_server/OrderCreateByWaybillNoServlet
+
