@@ -148,7 +148,7 @@ class FileHelper
     Express.from_zh_second_file_by_date(start_date)
   end
 
-  # 
+  # 取金邦达订单文件
   def self.from_jbda_file
     direct_r = I18n.t("orders_r_path")
     if !File.exist?(direct_r)

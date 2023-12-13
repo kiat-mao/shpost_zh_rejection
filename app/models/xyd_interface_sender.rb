@@ -241,4 +241,119 @@ class XydInterfaceSender < ActiveRecord::Base
 			return false
 		end
 	end
+
+	def self.order_create_by_waybill_no_interface_sender_initialize(order)
+		xydConfig = Rails.application.config_for(:xyd)
+		body = self.order_create_by_waybill_no_request_body_generate(order, xydConfig)
+		args = Hash.new
+		callback_params = Hash.new
+		callback_params["order_id"] = order.id
+		args[:callback_params] = callback_params.to_json
+		args[:url] = xydConfig[:order_create_by_waybill_no_url]
+		args[:parent_id] = order.id
+		# args[:unit_id] = order.unit_id
+		InterfaceSender.interface_sender_initialize("xyd_order_create_by_waybill_no", body, args)
+	end
+
+	def self.order_create_by_waybill_no_request_body_generate(order, xydConfig)
+		now_time = Time.new
+
+		params = {}
+		head = {}
+		head["system_name"] = xydConfig[:oc_system_name]
+		head["req_time"] = now_time.strftime("%Y%m%d%H%M%S%L")
+		head["req_trans_no"] = xydConfig[:oc_system_name] + head["req_time"]
+		signature = Digest::MD5.hexdigest("system_name" + head["system_name"] + "req_time" + head["req_time"] + "req_trans_no" + head["req_trans_no"] + xydConfig[:oc_pwd])
+		head["signature"] = signature
+		params["head"] = head
+		body = {}
+		body["ecCompanyId"] = xydConfig[:ecCompanyId]
+		body["parentId"] = xydConfig[:parentId]
+		orderNormals = []
+		orderNormal = {}
+		orderNormal["created_time"] = now_time.strftime("%Y-%m-%d %H:%M:%S")
+		orderNormal["logistics_provider"] = xydConfig[:logistics_provider]
+		orderNormal["ecommerce_no"] = xydConfig[:ecommerce_no]
+		orderNormal["ecommerce_user_id"] = now_time.strftime("%Y%m%d%H%M%S%L")
+		orderNormal["inner_channel"] = xydConfig[:inner_channel]
+		orderNormal["logistics_order_no"] = "order" + order.id.to_s
+
+		#different from order_create
+		orderNormal["waybill_no"] = order.express_no
+		orderNormal["one_bill_flag"] = "0"
+		orderNormal["product_type"] = "1"
+
+
+		# 20221115 区分国药上药
+		# if I18n.t('unit_no.gy').to_s == package.unit.no
+		# 	if !xydConfig[:sender_no].nil?
+		# 		orderNormal["sender_no"] = xydConfig[:gy_sender_no]
+		# 		orderNormal["sender_type"] = '1'
+		# 	end
+		# 	if !o.nil? && order.freight == true
+		# 		orderNormal["base_product_no"] = xydConfig[:base_product_no_3]
+		# 		orderNormal["payment_mode"] = xydConfig[:payment_mode_2]
+		# 	else
+		# 		orderNormal["base_product_no"] = xydConfig[:base_product_no_1]
+		# 	end
+		# else
+		if !xydConfig[:sender_no].nil?
+			orderNormal["sender_no"] = xydConfig[:sender_no]
+			orderNormal["sender_type"] = '1'
+		end
+		orderNormal["base_product_no"] = xydConfig[:base_product_no_1]
+		# end
+		sender = {}
+		receiver = {}
+		sender["name"] = order.sender_name
+		sender["mobile"] = order.sender_phone
+		sender["prov"] = order.sender_province
+		sender["city"] = order.sender_city
+		sender["county"] = order.sender_district
+		sender["address"] = order.sender_addr
+		receiver["name"] = order.receiver_name
+		receiver["mobile"] = order.receiver_phone
+		receiver["prov"] = order.receiver_province
+		receiver["city"] = order.receiver_city
+		receiver["county"] = order.receiver_district
+		receiver["address"] = order.receiver_addr
+		orderNormal["sender"] = sender
+		orderNormal["receiver"] = receiver
+
+		orderNormals << orderNormal
+		body["orderNormals"] = orderNormals
+		
+		params["body"] = body
+
+		params.to_json
+	end
+
+	def self.order_create_by_waybill_no_callback_method(response, callback_params)
+
+		return false if callback_params.nil?
+
+
+		waybill_no = callback_params[]
+		express_id = callback_params["express_id"]
+
+	
+		if response.nil?
+			return false
+		else
+			puts 'response:' + response
+			resJSON = JSON.parse response
+			resHead = resJSON["head"]
+			error_code = resHead["error_code"]
+			if (error_code=='0')
+				resBody = resJSON["body"]
+				logistic_id = resBody["logisticId"]
+				route_code = resBody["routeCode"]
+				if (! express_id.blank? && express_id.is_a?(Numeric))
+					Express.find(express_id).update!(logistic_id: logistic_id, route_code: route_code)
+					return true
+				end
+			end
+			return false
+		end
+	end
 end
