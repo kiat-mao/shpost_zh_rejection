@@ -8,6 +8,7 @@ development:
   password: shzh@0418
   upload_dir: fct2ap
   download_dir: ap2fct
+  jbda_dir: JDBSupload/upload
 test:
   <<: *default
   ftp_ip: 10.126.41.144
@@ -15,6 +16,7 @@ test:
   password: shzh@0418
   upload_dir: fct2ap
   download_dir: ap2fct
+  jbda_dir: JDBSupload/upload
 production:
   <<: *default
   ftp_ip: 10.126.41.144
@@ -22,3 +24,4 @@ production:
   password: shzh@0418
   upload_dir: fct2ap
   download_dir: ap2fct
+  jbda_dir: JDBSupload/upload
