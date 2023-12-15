@@ -1,10 +1,23 @@
 class XydInterfaceSender < ActiveRecord::Base
 
+	def self.order_create_by_waybill_no_schedule
+		xydConfig = Rails.application.config_for(:xyd)
+		orders = Order.waiting.limit(1000)
+		orders.each do |order|
+			self.order_create_by_waybill_no_interface_sender_initialize order
+		end
+	end
+
+
 	def self.address_parsing_schedule
 		xydConfig = Rails.application.config_for(:xyd)
-		expresses = Express.address_waiting
+		expresses = Express.address_waiting.limit(1000)
 		expresses.each do |express|
 			self.address_parsing_interface_sender_initialize express
+		end
+		orders = Order.address_waiting.limit(1000)
+		orders.each do |order|
+			self.address_parsing_interface_sender_initialize order
 		end
 	end
 
@@ -147,21 +160,23 @@ class XydInterfaceSender < ActiveRecord::Base
 		end
 	end
 
-	def self.address_parsing_interface_sender_initialize(express)
+	def self.address_parsing_interface_sender_initialize(address_object)
 		xydConfig = Rails.application.config_for(:xyd)
-		body = self.address_parsing_request_body_generate(express, xydConfig)
+		body = self.address_parsing_request_body_generate(address_object, xydConfig)
 		args = Hash.new
 		callback_params = Hash.new
-		callback_params["express_id"] = express.id
+		callback_params["address_object_id"] = address_object.id
+		callback_params["address_object_class"] = address_object.class.name
 		args[:callback_params] = callback_params.to_json
 		args[:url] = xydConfig[:address_parsing_url]
-		args[:parent_id] = express.id
+		args[:parent_id] = address_object.id
+		args[:parent_class] = address_object.class
 		# args[:unit_id] = order.unit_id
 		InterfaceSender.interface_sender_initialize("xyd_address_parsing", body, args)
-		express.update!(address_status: :address_parseing)
+		address_object.address_parseing!
 	end
 
-	def self.address_parsing_request_body_generate(express, xydConfig)
+	def self.address_parsing_request_body_generate(address_object, xydConfig)
 		now_time = Time.new
 
 		params = {}
@@ -176,7 +191,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		body["salt"] = xydConfig[:ap_salt]
 		addresses = []
 		address = {}
-		address["address"] = express.receiver_addr
+		address["address"] = address_object.receiver_addr
 		addresses << address
 		body["addresses"] = addresses
 		params["body"] = body
@@ -186,15 +201,28 @@ class XydInterfaceSender < ActiveRecord::Base
 
 	def self.address_parsing_callback_method(response, callback_params)
 		puts 'address_parsing_callback_method!!'
-		express_id = nil
+		address_object_id = nil
 		prov_name = nil
 		city_name = nil
 		county_name = nil
+		address_object = nil
+		address_object_class = nil
 		if callback_params.nil?
 			puts 'callback_params:'
 		else
 			puts 'callback_params:' + callback_params.to_s
-			express_id = callback_params["express_id"]
+			address_object_id = callback_params["address_object_id"]
+			#兼容老数据
+			address_object_id ||= callback_params["express_id"]
+
+			address_object_class ||= callback_params["address_object_class"]
+			
+
+			if (!address_object_id.nil? && address_object_id.is_a?(Numeric))
+				address_object = address_object_class.constantize.find address_object_id
+				address_object ||= Express.find address_object_id
+			end
+			return false if address_object.blank?	
 		end
 		if response.nil?
 			puts 'response:'
@@ -216,27 +244,21 @@ class XydInterfaceSender < ActiveRecord::Base
 					puts '省:' + prov_name.to_s
 					puts '市:' + city_name.to_s
 					puts '区:' + county_name.to_s
-					if (!express_id.nil? && express_id.is_a?(Numeric))
-						if (!prov_name.nil? && !city_name.nil? && !county_name.nil? && !prov_name.empty? && !city_name.empty? && !county_name.empty?)
-							Express.find(express_id).update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_success)
-						else
-							# TODO
-							Express.find(express_id).update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_failed)
-						end
-						return true
+					if (!prov_name.nil? && !city_name.nil? && !county_name.nil? && !prov_name.empty? && !city_name.empty? && !county_name.empty?)
+						address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_success) if ! address_object.no_modify
+					else
+						# TODO
+						address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_failed) if ! address_object.no_modify
 					end
+					return true
 				else
-					if (!express_id.nil? && express_id.is_a?(Numeric))
-						Express.find(express_id).update!(address_status: :address_failed)
-						return true
-					end
+					address_object.address_failed! if ! address_object.no_modify
+					return false
 				end
 			else
 				puts "address parsing failed, error_code:" + error_code.to_s
-				if (!express_id.nil? && express_id.is_a?(Numeric))
-					Express.find(express_id).update!(address_status: :address_failed)
-					return true
-				end
+				address_object.address_failed! if ! address_object.no_modify
+				return true
 			end
 			return false
 		end
@@ -253,6 +275,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		args[:parent_id] = order.id
 		# args[:unit_id] = order.unit_id
 		InterfaceSender.interface_sender_initialize("xyd_order_create_by_waybill_no", body, args)
+		order.uploading!
 	end
 
 	def self.order_create_by_waybill_no_request_body_generate(order, xydConfig)
@@ -269,6 +292,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		body = {}
 		body["ecCompanyId"] = xydConfig[:ecCompanyId]
 		body["parentId"] = xydConfig[:parentId]
+		orders = {}
 		orderNormals = []
 		orderNormal = {}
 		orderNormal["created_time"] = now_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -279,7 +303,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		orderNormal["logistics_order_no"] = "order" + order.id.to_s
 
 		#different from order_create
-		orderNormal["waybill_no"] = order.express_no
+		orderNormal["waybill_no"] = order.address_object_no
 		orderNormal["one_bill_flag"] = "0"
 		orderNormal["product_type"] = "1"
 
@@ -321,7 +345,8 @@ class XydInterfaceSender < ActiveRecord::Base
 		orderNormal["receiver"] = receiver
 
 		orderNormals << orderNormal
-		body["orderNormals"] = orderNormals
+		orders["orderNormal"] = orderNormals
+		body["orders"] = orders
 		
 		params["body"] = body
 
@@ -329,14 +354,10 @@ class XydInterfaceSender < ActiveRecord::Base
 	end
 
 	def self.order_create_by_waybill_no_callback_method(response, callback_params)
-
 		return false if callback_params.nil?
 
+		order_id = callback_params["order_id"]
 
-		waybill_no = callback_params[]
-		express_id = callback_params["express_id"]
-
-	
 		if response.nil?
 			return false
 		else
@@ -348,8 +369,11 @@ class XydInterfaceSender < ActiveRecord::Base
 				resBody = resJSON["body"]
 				logistic_id = resBody["logisticId"]
 				route_code = resBody["routeCode"]
-				if (! express_id.blank? && express_id.is_a?(Numeric))
-					Express.find(express_id).update!(logistic_id: logistic_id, route_code: route_code)
+				if (! order_id.blank? && order_id.is_a?(Numeric))
+					order = Order.find order_id
+					order.logistic_id = logistic_id
+					order.route_code = route_code
+					order.uploaded!
 					return true
 				end
 			end

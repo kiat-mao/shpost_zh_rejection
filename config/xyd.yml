@@ -4,13 +4,13 @@ default: &default
 development:
   <<: *default
   # order create
-  order_create_url: http://222.66.108.206:4000/xyd_server/OrderCreateServlet
+  order_create_url: http://10.126.22.218:9080/xyd_server/OrderCreateServlet
   oc_system_name: test
   oc_pwd: "11111"
   ecCompanyId: 
   parentId: 
   logistics_provider: B
-  ecommerce_no: HNHCYY
+  ecommerce_no: XYD
   inner_channel: "0"
   sender_no: "1030001504969"
   # sy_sender_no:
@@ -19,11 +19,11 @@ development:
   base_product_no_3: "3" #到付
   payment_mode_2: "2"
   # address parsing
-  address_parsing_url: http://222.66.108.206:4000/xyd_server/AddressParsingServlet
+  address_parsing_url: http://10.126.22.218:9080/xyd_server/AddressParsingServlet
   ap_system_name: test
   ap_pwd: "11111"
   ap_salt: ""
-  order_create_by_waybill_no_url: http://222.66.108.206:4000/xyd_server/OrderCreateByWaybillNoServlet
+  order_create_by_waybill_no_url: http://10.126.22.218:9080/xyd_server/OrderCreateByWaybillNoServlet
 test:
   <<: *default
   # order create
