@@ -23,11 +23,15 @@ every 2.minutes do
   runner "XydInterfaceSender.address_parsing_schedule"
 end
 
+every 2.minutes do 
+  runder "XydInterfaceSender.order_create_by_waybill_no_schedule"
+end
+
 every 2.minutes do
   runner "InterfaceSender.schedule_send"
 end
 
-every 1.hours do 
+every 30.minutes do 
   runder "FileHelper.from_jbda_file"
 end
 
