@@ -2,6 +2,15 @@ class OrdersController < ApplicationController
   load_and_authorize_resource :order
   protect_from_forgery :except => [:change_order_addr]
 
+  def index
+    @orders = Order.all
+    
+    @orders_grid = initialize_grid(@orders,
+         :order => 'created_at',
+         :order_direction => 'desc', 
+         :per_page => params[:page_size])
+  end
+
   def edit
   end
 

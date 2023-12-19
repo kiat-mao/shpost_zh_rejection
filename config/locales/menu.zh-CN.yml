@@ -60,6 +60,13 @@ zh-CN:
           needrole:
             can: :anomaly_index
             role: :Express
+        orders:
+          name: "发卡信息管理"  
+          link: "/orders"
+          need_count: false
+          needrole:
+            can: :read
+            role: :Order
         change_order_addr:
           name: "发卡信息改址"  
           link: "/orders/change_order_addr"

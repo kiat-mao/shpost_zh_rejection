@@ -343,6 +343,7 @@ zh-CN:
         receiver_phone: "收件人电话"
         status: "状态"
         address_status: "地址解析状态"
+        no_modify: "无需修改"
   user_navigation:
     update_self: "个人信息"
     show_unit: "单位信息"
@@ -368,8 +369,7 @@ zh-CN:
 
 # 招行订单(金邦达，捷德)
   orders_r_path: "../shpost_zh_rejection/public/orders_r/"
-  orders_t_path: "../shpost_zh_rejection/public/orders_t/"
   jbda_file_name: "EMS热敏"
-  download_file_start: 
-    - "JBDS"
-    - "JDSH"
+  # download_file_start: 
+  #   - "JBDS"
+  #   - "JDSH"
