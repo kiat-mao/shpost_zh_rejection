@@ -107,17 +107,19 @@ class FileHelper
 
     download_dir = "/#{FileHelper::FTP_CONFIG[:download_dir]}"
 
-    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-      sftp.dir.foreach(download_dir) do |entry|
-        if entry.name.start_with? I18n.t("first_download")
-          sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+    self.sftp_download(download_dir, direct_r, I18n.t("first_download"))
 
-          Rails.logger.info("#{Time.now} zh_first_file download #{entry.name}")
+    # Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+    #   sftp.dir.foreach(download_dir) do |entry|
+    #     if entry.name.start_with? I18n.t("first_download")
+    #       sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
 
-          sftp.remove!("#{download_dir}/#{entry.name}")
-        end
-      end
-    end
+    #       Rails.logger.info("#{Time.now} zh_first_file download #{entry.name}")
+
+    #       sftp.remove!("#{download_dir}/#{entry.name}")
+    #     end
+    #   end
+    # end
 
     start_date = Date.yesterday
     Express.from_zh_first_file_by_date(start_date)
@@ -132,17 +134,19 @@ class FileHelper
 
     download_dir = "/#{FileHelper::FTP_CONFIG[:download_dir]}"
 
-    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-      sftp.dir.foreach("#{download_dir}") do |entry|
-        if entry.name.start_with? I18n.t("second_download")
-          sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+    self.sftp_download(download_dir, direct_r, I18n.t("second_download"))
 
-          Rails.logger.info("#{Time.now} zh_second_file download #{entry.name}")
+    # Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+    #   sftp.dir.foreach("#{download_dir}") do |entry|
+    #     if entry.name.start_with? I18n.t("second_download")
+    #       sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
 
-          sftp.remove!("#{download_dir}/#{entry.name}")
-        end
-      end
-    end
+    #       Rails.logger.info("#{Time.now} zh_second_file download #{entry.name}")
+
+    #       sftp.remove!("#{download_dir}/#{entry.name}")
+    #     end
+    #   end
+    # end
     
     start_date = Date.yesterday
     Express.from_zh_second_file_by_date(start_date)
@@ -157,19 +161,37 @@ class FileHelper
 
     download_dir = "/#{FileHelper::FTP_CONFIG[:jbda_dir]}"
 
-    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-      sftp.dir.foreach("#{download_dir}") do |entry|
-        if entry.name.start_with? I18n.t("jbda_file_name")
-          sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
+    self.sftp_download(download_dir, direct_r, I18n.t("jbda_file_name"), false)
 
-          Rails.logger.info("#{Time.now} jbda_file_name download #{entry.name}")
+    # Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+    #   sftp.dir.foreach("#{download_dir}") do |entry|
+    #     name = entry.name.force_encoding('UTF-8')
+    #     if name.start_with? I18n.t("jbda_file_name")
+    #       sftp.download!("#{download_dir}/#{name}", "#{direct_r}/#{name}")
 
-          sftp.remove!("#{download_dir}/#{entry.name}")
-        end
-      end
-    end
+    #       Rails.logger.info("#{Time.now} jbda_file_name download #{name}")
+
+    #       sftp.remove!("#{download_dir}/#{name}")
+    #     end
+    #   end
+    # end
     
     start_date = Date.today
     Order.get_orders_by_date(start_date)
+  end
+  
+  def self.sftp_download(r_dir, t_dir, file_name, remove = true)
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+      sftp.dir.foreach(r_dir) do |entry|
+        name = entry.name.force_encoding('UTF-8')
+        if name.start_with? file_name
+          sftp.download!("#{r_dir}/#{name}", "#{t_dir}/#{name}")
+
+          Rails.logger.info("#{Time.now} r_dir download #{name}")
+
+          sftp.remove!("#{download_dir}/#{name}") if remove
+        end
+      end
+    end
   end
 end
