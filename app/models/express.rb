@@ -29,7 +29,7 @@ class Express < ApplicationRecord
 
   def self.to_zh_first_file_by_date(start_date, end_date)
     file_path_name = nil
-    results = Express.where("status=? and scaned_at>=? and scaned_at<?", "waiting", start_date, end_date)
+    results = Express.where("status=? and scaned_at<?", "waiting", end_date)
     if !results.blank?
     	filename = "#{I18n.t("first_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
       direct = I18n.t("to_zh_first_file_path")
@@ -60,7 +60,7 @@ class Express < ApplicationRecord
 
   def self.to_zh_second_file_by_date(start_date, end_date)
     file_path_name = nil
-    results = Express.where("status=? and scaned_at>=? and scaned_at<?", "done", start_date, end_date).order(:scaned_at, :express_no)
+    results = Express.where("status=? and scaned_at<?", "done", end_date).order(:scaned_at, :express_no)
     if !results.blank?
     	filename = "#{I18n.t("second_upload")}#{Time.now.strftime('%Y%m%d%H%M')}.TXT"
       direct = I18n.t("to_zh_second_file_path")
