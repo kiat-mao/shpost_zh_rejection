@@ -200,69 +200,118 @@ class XydInterfaceSender < ActiveRecord::Base
 	end
 
 	def self.address_parsing_callback_method(response, callback_params)
-		puts 'address_parsing_callback_method!!'
-		address_object_id = nil
-		prov_name = nil
-		city_name = nil
-		county_name = nil
-		address_object = nil
-		address_object_class = nil
-		if callback_params.nil?
-			puts 'callback_params:'
-		else
-			puts 'callback_params:' + callback_params.to_s
-			address_object_id = callback_params["address_object_id"]
-			#兼容老数据
-			address_object_id ||= callback_params["express_id"]
+    return false if callback_params.blank? || response.blank?
 
-			address_object_class ||= callback_params["address_object_class"]
+    # 判断order是否存在,是否不可修改
+    begin
+			if !callback_params["address_object_id"].blank?
+				#兼容老数据
+				order ||= Express.find callback_params["express_id"]
+			else
+				order ||= address_object_class.constantize.find address_object_id
+			end
+    rescue StandardError => e
+      Rails.logger.error e.message
+      return false
+    ensure
+      if order.no_modify
+        order.address_success!
+        return true
+      end
+    end
+
+    resJSON = JSON.parse response
+    error_code = resJSON['head']['error_code']
+
+    if ! error_code.eql? '0'
+			order.address_failed!
+      return true
+    end
+
+    address = resJSON['body']['results'][0]
+    res_code = address['resCode']
+    if res_code.eql? '0000'
+      order.receiver_province = address['provName']
+      order.receiver_city = address['cityName']
+      order.receiver_district = address['countyName']
+
+      if order.receiver_province.blank? || order.receiver_city.blank? || order.receiver_district.blank?
+        order.address_failed!
+      else
+        order.address_success!
+      end
+
+      true
+    else
+      order.address_failed!
+      false
+    end
+  end
+
+	# def self.address_parsing_callback_method(response, callback_params)
+	# 	puts 'address_parsing_callback_method!!'
+	# 	address_object_id = nil
+	# 	prov_name = nil
+	# 	city_name = nil
+	# 	county_name = nil
+	# 	address_object = nil
+	# 	address_object_class = nil
+	# 	if callback_params.nil?
+	# 		puts 'callback_params:'
+	# 	else
+	# 		puts 'callback_params:' + callback_params.to_s
+	# 		address_object_id = callback_params["address_object_id"]
+	# 		#兼容老数据
+	# 		address_object_id ||= callback_params["express_id"]
+
+	# 		address_object_class ||= callback_params["address_object_class"]
 			
 
-			if (!address_object_id.nil? && address_object_id.is_a?(Numeric))
-				address_object = address_object_class.constantize.find address_object_id
-				address_object ||= Express.find address_object_id
-			end
-			return false if address_object.blank?	
-		end
-		if response.nil?
-			puts 'response:'
-			return false
-		else
-			puts 'response:' + response
-			resJSON = JSON.parse response
-			resHead = resJSON["head"]
-			error_code = resHead["error_code"]
-			if (error_code=='0')
-				resBody = resJSON["body"]
-				results = resBody["results"]
-				address = results[0]
-				res_code = address["resCode"]
-				if res_code == '0000'
-					prov_name = address["provName"]
-					city_name = address["cityName"]
-					county_name = address["countyName"]
-					puts '省:' + prov_name.to_s
-					puts '市:' + city_name.to_s
-					puts '区:' + county_name.to_s
-					if (!prov_name.nil? && !city_name.nil? && !county_name.nil? && !prov_name.empty? && !city_name.empty? && !county_name.empty?)
-						address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_success) if ! address_object.no_modify
-					else
-						# TODO
-						address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_failed) if ! address_object.no_modify
-					end
-					return true
-				else
-					address_object.address_failed! if ! address_object.no_modify
-					return false
-				end
-			else
-				puts "address parsing failed, error_code:" + error_code.to_s
-				address_object.address_failed! if ! address_object.no_modify
-				return true
-			end
-			return false
-		end
-	end
+	# 		if (!address_object_id.nil? && address_object_id.is_a?(Numeric))
+	# 			address_object = address_object_class.constantize.find address_object_id
+	# 			address_object ||= Express.find address_object_id
+	# 		end
+	# 		return false if address_object.blank?	
+	# 	end
+	# 	if response.nil?
+	# 		puts 'response:'
+	# 		return false
+	# 	else
+	# 		puts 'response:' + response
+	# 		resJSON = JSON.parse response
+	# 		resHead = resJSON["head"]
+	# 		error_code = resHead["error_code"]
+	# 		if (error_code=='0')
+	# 			resBody = resJSON["body"]
+	# 			results = resBody["results"]
+	# 			address = results[0]
+	# 			res_code = address["resCode"]
+	# 			if res_code == '0000'
+	# 				prov_name = address["provName"]
+	# 				city_name = address["cityName"]
+	# 				county_name = address["countyName"]
+	# 				puts '省:' + prov_name.to_s
+	# 				puts '市:' + city_name.to_s
+	# 				puts '区:' + county_name.to_s
+	# 				if (!prov_name.nil? && !city_name.nil? && !county_name.nil? && !prov_name.empty? && !city_name.empty? && !county_name.empty?)
+	# 					address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_success) if ! address_object.no_modify
+	# 				else
+	# 					# TODO
+	# 					address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_failed) if ! address_object.no_modify
+	# 				end
+	# 				return true
+	# 			else
+	# 				address_object.address_failed! if ! address_object.no_modify
+	# 				return false
+	# 			end
+	# 		else
+	# 			puts "address parsing failed, error_code:" + error_code.to_s
+	# 			address_object.address_failed! if ! address_object.no_modify
+	# 			return true
+	# 		end
+	# 		return false
+	# 	end
+	# end
 
 	def self.order_create_by_waybill_no_interface_sender_initialize(order)
 		xydConfig = Rails.application.config_for(:xyd)
