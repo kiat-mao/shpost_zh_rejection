@@ -109,18 +109,6 @@ class FileHelper
 
     self.sftp_download(download_dir, direct_r, I18n.t("first_download"))
 
-    # Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-    #   sftp.dir.foreach(download_dir) do |entry|
-    #     if entry.name.start_with? I18n.t("first_download")
-    #       sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
-
-    #       Rails.logger.info("#{Time.now} zh_first_file download #{entry.name}")
-
-    #       sftp.remove!("#{download_dir}/#{entry.name}")
-    #     end
-    #   end
-    # end
-
     start_date = Date.yesterday
     Express.from_zh_first_file_by_date(start_date)
   end
@@ -136,18 +124,6 @@ class FileHelper
 
     self.sftp_download(download_dir, direct_r, I18n.t("second_download"))
 
-    # Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-    #   sftp.dir.foreach("#{download_dir}") do |entry|
-    #     if entry.name.start_with? I18n.t("second_download")
-    #       sftp.download!("#{download_dir}/#{entry.name}", "#{direct_r}/#{entry.name}")
-
-    #       Rails.logger.info("#{Time.now} zh_second_file download #{entry.name}")
-
-    #       sftp.remove!("#{download_dir}/#{entry.name}")
-    #     end
-    #   end
-    # end
-    
     start_date = Date.yesterday
     Express.from_zh_second_file_by_date(start_date)
   end
@@ -163,23 +139,25 @@ class FileHelper
 
     self.sftp_download(download_dir, direct_r, I18n.t("jbda_file_name"), false)
 
-    # Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-    #   sftp.dir.foreach("#{download_dir}") do |entry|
-    #     name = entry.name.force_encoding('UTF-8')
-    #     if name.start_with? I18n.t("jbda_file_name")
-    #       sftp.download!("#{download_dir}/#{name}", "#{direct_r}/#{name}")
-
-    #       Rails.logger.info("#{Time.now} jbda_file_name download #{name}")
-
-    #       sftp.remove!("#{download_dir}/#{name}")
-    #     end
-    #   end
-    # end
-    
     start_date = Date.today
-    Order.get_orders_by_date(start_date)
+    Order.get_jbda_orders_by_date(start_date)
   end
   
+  # 取捷德订单文件
+  def self.from_jd_file
+    direct_r = I18n.t("orders_r_path")
+    if !File.exist?(direct_r)
+      Dir.mkdir(direct_r)          
+    end
+
+    download_dir = "/#{FileHelper::FTP_CONFIG[:jd_dir]}"
+
+    self.sftp_download(download_dir, direct_r, I18n.t("jd_file_name"), false)
+
+    start_date = Date.today
+    Order.get_jd_orders_by_date(start_date)
+  end
+
   def self.sftp_download(r_dir, t_dir, file_name, remove = true)
     Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
       sftp.dir.foreach(r_dir) do |entry|

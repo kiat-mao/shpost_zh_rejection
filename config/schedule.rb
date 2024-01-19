@@ -33,6 +33,7 @@ end
 
 every 30.minutes do 
   runder "FileHelper.from_jbda_file"
+  runder "FileHelper.from_jd_file"
 end
 
 every :day, :at => '0:01am' do
