@@ -23,11 +23,11 @@ class Order < ApplicationRecord
   	
   	to_deal_r_files.each do |ff|
       #加密压缩文件路径
-  		file_path_r_encrypt = File.join(direct, ff)
+    	file_path_r_encrypt = File.join(direct, ff)
       if !File.exist?(file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), ''))   
         Order.get_jbd_orders(file_path_r_encrypt)
       end
-  	end
+    end
   end
 
   def self.get_jbd_orders(file_path_r_encrypt)
@@ -57,6 +57,7 @@ class Order < ApplicationRecord
     
     to_deal_r_files.each do |ff|
       file_path_r_encrypt = File.join(direct, ff)
+      
       if !File.exist?(file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), ''))   
         Order.get_jd_orders(file_path_r_encrypt)
       end
@@ -66,7 +67,7 @@ class Order < ApplicationRecord
   def self.get_jd_orders(file_path_r_encrypt)
     ActiveRecord::Base.transaction do
       # 解密文件
-      FileHelper.gpg_decrypt_file("888888888888", file_path_r_encrypt, nil)
+      FileHelper.gpg_decrypt_file("12345abcde！", file_path_r_encrypt, nil)
       #解密文件路径
       to_deal_file_path = file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), '')   
       Order.deal_file(to_deal_file_path)
@@ -88,7 +89,7 @@ class Order < ApplicationRecord
       fname_start= fname_starts+fdate
     
       Dir.children(direct).each do |f|
-        if f.start_with? fname_start
+        if (f.start_with? fname_start) && (f.end_with? ".pgp")
           to_deal_r_files << f
         end
       end
