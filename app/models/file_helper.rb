@@ -137,7 +137,7 @@ class FileHelper
 
     download_dir = "/#{FileHelper::FTP_CONFIG[:jbda_dir]}"
 
-    self.sftp_download(download_dir, direct_r, I18n.t("jbda_file_name"), false)
+    self.sftp_download(download_dir, direct_r, I18n.t("jbda_file_name"))
 
     start_date = Date.today
     Order.get_jbda_orders_by_date(start_date)
@@ -152,7 +152,7 @@ class FileHelper
 
     download_dir = "/#{FileHelper::FTP_CONFIG[:jd_dir]}"
 
-    self.sftp_download(download_dir, direct_r, I18n.t("jd_file_name"), false)
+    self.sftp_download(download_dir, direct_r, I18n.t("jd_file_name"))
 
     start_date = Date.today
     Order.get_jd_orders_by_date(start_date)
@@ -167,7 +167,7 @@ class FileHelper
 
           Rails.logger.info("#{Time.now} r_dir download #{name}")
 
-          sftp.remove!("#{download_dir}/#{name}") if remove
+          sftp.remove!("#{r_dir}/#{name}") if remove
         end
       end
     end

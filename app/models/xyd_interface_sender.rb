@@ -208,7 +208,7 @@ class XydInterfaceSender < ActiveRecord::Base
 				#兼容老数据
 				order ||= Express.find callback_params["express_id"]
 			else
-				order ||= address_object_class.constantize.find address_object_id
+				order ||= callback_params["address_object_class"].constantize.find callback_params["address_object_id"]
 			end
     rescue StandardError => e
       Rails.logger.error e.message
@@ -352,7 +352,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		orderNormal["logistics_order_no"] = "order" + order.id.to_s
 
 		#different from order_create
-		orderNormal["waybill_no"] = order.address_object_no
+		orderNormal["waybill_no"] = order.express_no
 		orderNormal["one_bill_flag"] = "0"
 		orderNormal["product_type"] = "1"
 

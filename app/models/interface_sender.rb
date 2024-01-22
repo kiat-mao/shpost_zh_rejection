@@ -45,11 +45,13 @@ class InterfaceSender < ActiveRecord::Base
     d1 = Time.now
     # interface_senders = self.where(status: InterfaceSender::STATUS[:waiting]).where('next_time < ?', Time.now).order(:created_at).limit(1000)
     interface_senders = self.where(status: InterfaceSender::STATUS[:waiting]).where('next_time < ?', Time.now).where('(last_time < next_time) or (last_time is null) or (last_time < ?)', (Time.now - 1.hour)).limit(1000)
-    interface_senders = InterfaceSender.where(ids: interface_senders.ids)
+    interface_senders = InterfaceSender.where(id: interface_senders.ids)
     interface_senders.update_all(last_time: Time.now)
 
     cout = interface_senders.size
 
+    interface_senders = interface_senders.to_a
+    
     if ! thread_count.blank?
       i = thread_count
     else

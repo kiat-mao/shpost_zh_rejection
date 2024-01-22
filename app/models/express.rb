@@ -180,7 +180,7 @@ class Express < ApplicationRecord
           
             if ["01", "02"].include?columns[1]
               addr = columns[3].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
-              e.update! deal_require: columns[1], status: "pending", address_status: "address_waiting", receiver_postcode: columns[2], receiver_addr: caddr, receiver_name: columns[4], receiver_phone: columns[5]
+              e.update! deal_require: columns[1], status: "pending", address_status: "address_waiting", receiver_postcode: columns[2], receiver_addr: columns[3], receiver_name: columns[4], receiver_phone: columns[5]
             else
               e.update! deal_require: columns[1], status: "pending"#, address_status: "address_waiting"
             end
