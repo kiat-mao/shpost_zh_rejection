@@ -16,21 +16,21 @@ class Order < ApplicationRecord
   end
 
   # 金邦达
-  def self.get_jbd_orders_by_date(start_date)
+  def self.get_jbda_orders_by_date(start_date)
     direct = I18n.t("orders_r_path")
     
-  	to_deal_r_files = Order.get_to_deal_files(start_date, "jbd", direct)   
+  	to_deal_r_files = Order.get_to_deal_files(start_date, "jbda", direct)   
   	
   	to_deal_r_files.each do |ff|
       #加密压缩文件路径
     	file_path_r_encrypt = File.join(direct, ff)
       if !File.exist?(file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), ''))   
-        Order.get_jbd_orders(file_path_r_encrypt)
+        Order.get_jbda_orders(file_path_r_encrypt)
       end
     end
   end
 
-  def self.get_jbd_orders(file_path_r_encrypt)
+  def self.get_jbda_orders(file_path_r_encrypt)
     ActiveRecord::Base.transaction do
       # 解密文件
       FileHelper.gpg_decrypt_file("888888888888", file_path_r_encrypt, nil)
@@ -79,7 +79,7 @@ class Order < ApplicationRecord
     to_deal_r_files = []   
     fdate = start_date.strftime('%Y%m%d')
 
-    if type.eql?"jbd"
+    if type.eql?"jbda"
       fname_starts = I18n.t("jbda_file_name")
     elsif type.eql?"jd"
       fname_starts = I18n.t("jd_file_name")

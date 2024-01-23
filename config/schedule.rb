@@ -24,7 +24,7 @@ every 2.minutes do
 end
 
 every 2.minutes do 
-  runder "XydInterfaceSender.order_create_by_waybill_no_schedule"
+  runner "XydInterfaceSender.order_create_by_waybill_no_schedule"
 end
 
 every 2.minutes do
@@ -32,8 +32,8 @@ every 2.minutes do
 end
 
 every 30.minutes do 
-  runder "FileHelper.from_jbda_file"
-  runder "FileHelper.from_jd_file"
+  runner "FileHelper.from_jbda_file"
+  runner "FileHelper.from_jd_file"
 end
 
 every :day, :at => '0:01am' do

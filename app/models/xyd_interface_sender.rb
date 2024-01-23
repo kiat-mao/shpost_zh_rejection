@@ -2,7 +2,7 @@ class XydInterfaceSender < ActiveRecord::Base
 
 	def self.order_create_by_waybill_no_schedule
 		xydConfig = Rails.application.config_for(:xyd)
-		orders = Order.waiting.limit(1000)
+		orders = Order.waiting.address_success.limit(1000)
 		orders.each do |order|
 			self.order_create_by_waybill_no_interface_sender_initialize order
 		end
@@ -46,8 +46,8 @@ class XydInterfaceSender < ActiveRecord::Base
 		head["signature"] = signature
 		params["head"] = head
 		body = {}
-		body["ecCompanyId"] = xydConfig[:ecCompanyId]
-		body["parentId"] = xydConfig[:parentId]
+		# body["ecCompanyId"] = xydConfig[:ecCompanyId]
+		# body["parentId"] = xydConfig[:parentId]
 		order = {}
 		order["created_time"] = now_time.strftime("%Y-%m-%d %H:%M:%S")
 		order["logistics_provider"] = xydConfig[:logistics_provider]
@@ -248,70 +248,6 @@ class XydInterfaceSender < ActiveRecord::Base
     end
   end
 
-	# def self.address_parsing_callback_method(response, callback_params)
-	# 	puts 'address_parsing_callback_method!!'
-	# 	address_object_id = nil
-	# 	prov_name = nil
-	# 	city_name = nil
-	# 	county_name = nil
-	# 	address_object = nil
-	# 	address_object_class = nil
-	# 	if callback_params.nil?
-	# 		puts 'callback_params:'
-	# 	else
-	# 		puts 'callback_params:' + callback_params.to_s
-	# 		address_object_id = callback_params["address_object_id"]
-	# 		#兼容老数据
-	# 		address_object_id ||= callback_params["express_id"]
-
-	# 		address_object_class ||= callback_params["address_object_class"]
-			
-
-	# 		if (!address_object_id.nil? && address_object_id.is_a?(Numeric))
-	# 			address_object = address_object_class.constantize.find address_object_id
-	# 			address_object ||= Express.find address_object_id
-	# 		end
-	# 		return false if address_object.blank?	
-	# 	end
-	# 	if response.nil?
-	# 		puts 'response:'
-	# 		return false
-	# 	else
-	# 		puts 'response:' + response
-	# 		resJSON = JSON.parse response
-	# 		resHead = resJSON["head"]
-	# 		error_code = resHead["error_code"]
-	# 		if (error_code=='0')
-	# 			resBody = resJSON["body"]
-	# 			results = resBody["results"]
-	# 			address = results[0]
-	# 			res_code = address["resCode"]
-	# 			if res_code == '0000'
-	# 				prov_name = address["provName"]
-	# 				city_name = address["cityName"]
-	# 				county_name = address["countyName"]
-	# 				puts '省:' + prov_name.to_s
-	# 				puts '市:' + city_name.to_s
-	# 				puts '区:' + county_name.to_s
-	# 				if (!prov_name.nil? && !city_name.nil? && !county_name.nil? && !prov_name.empty? && !city_name.empty? && !county_name.empty?)
-	# 					address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_success) if ! address_object.no_modify
-	# 				else
-	# 					# TODO
-	# 					address_object.update!(receiver_province: prov_name, receiver_city: city_name, receiver_district: county_name, address_status: :address_failed) if ! address_object.no_modify
-	# 				end
-	# 				return true
-	# 			else
-	# 				address_object.address_failed! if ! address_object.no_modify
-	# 				return false
-	# 			end
-	# 		else
-	# 			puts "address parsing failed, error_code:" + error_code.to_s
-	# 			address_object.address_failed! if ! address_object.no_modify
-	# 			return true
-	# 		end
-	# 		return false
-	# 	end
-	# end
 
 	def self.order_create_by_waybill_no_interface_sender_initialize(order)
 		xydConfig = Rails.application.config_for(:xyd)
@@ -335,7 +271,7 @@ class XydInterfaceSender < ActiveRecord::Base
 		head["system_name"] = xydConfig[:oc_system_name]
 		head["req_time"] = now_time.strftime("%Y%m%d%H%M%S%L")
 		head["req_trans_no"] = xydConfig[:oc_system_name] + head["req_time"]
-		signature = Digest::MD5.hexdigest("system_name" + head["system_name"] + "req_time" + head["req_time"] + "req_trans_no" + head["req_trans_no"] + xydConfig[:oc_pwd])
+		signature = Digest::MD5.hexdigest("system_name" + head["system_name"] + "req_time" + head["req_time"] + "req_trans_no" + head["req_trans_no"] + xydConfig[:oc_pwd_waybill])
 		head["signature"] = signature
 		params["head"] = head
 		body = {}
@@ -356,20 +292,9 @@ class XydInterfaceSender < ActiveRecord::Base
 		orderNormal["one_bill_flag"] = "0"
 		orderNormal["product_type"] = "1"
 
+		orderNormal["weight"] = "70"
 
-		# 20221115 区分国药上药
-		# if I18n.t('unit_no.gy').to_s == package.unit.no
-		# 	if !xydConfig[:sender_no].nil?
-		# 		orderNormal["sender_no"] = xydConfig[:gy_sender_no]
-		# 		orderNormal["sender_type"] = '1'
-		# 	end
-		# 	if !o.nil? && order.freight == true
-		# 		orderNormal["base_product_no"] = xydConfig[:base_product_no_3]
-		# 		orderNormal["payment_mode"] = xydConfig[:payment_mode_2]
-		# 	else
-		# 		orderNormal["base_product_no"] = xydConfig[:base_product_no_1]
-		# 	end
-		# else
+
 		if !xydConfig[:sender_no].nil?
 			orderNormal["sender_no"] = xydConfig[:sender_no]
 			orderNormal["sender_type"] = '1'
