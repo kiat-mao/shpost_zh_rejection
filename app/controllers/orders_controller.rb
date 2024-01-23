@@ -21,6 +21,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
       if !order_params[:receiver_province].blank? && !order_params[:receiver_city].blank? && !order_params[:receiver_district].blank?
       	if @order.update(order_params)
+          @order.update address_status: "address_success"
           format.html { redirect_to @order, notice: I18n.t('controller.update_success_notice', model: '邮件')}
           format.json { head :no_content }
         else
