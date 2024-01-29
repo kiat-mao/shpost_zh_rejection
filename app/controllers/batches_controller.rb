@@ -15,7 +15,7 @@ class BatchesController < ApplicationController
 
   def done
     @batch.expresses.where(status:"pending").each do |e|
-      e.update status: "done", deal_result: get_done_deal_result(e.deal_require), deal_desc: "异常", scaned_at: Time.now 
+      e.update status: "done", deal_result: Express.get_done_deal_result(e.deal_require), deal_desc: "异常", scaned_at: Time.now 
     end
     @batch.update status: "done"
 
@@ -26,16 +26,5 @@ class BatchesController < ApplicationController
     end
   end
 
-  def get_done_deal_result(deal_require)
-    deal_result = ""
-    case deal_require
-    when "01"
-      deal_result = "02"
-    when "02"
-      deal_result = "04"
-    when "03"
-      deal_result = "06"
-    end
-    return deal_result
-  end
+  
 end

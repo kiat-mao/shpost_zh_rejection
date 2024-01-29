@@ -65,6 +65,8 @@ Rails.application.routes.draw do
       post 'anomaly_done'
       get 'anomaly_index'
       post 'express_export'
+      get 'set_failed'
+      post 'set_failed'
     end
   end
 

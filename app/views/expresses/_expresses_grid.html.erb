@@ -1,9 +1,9 @@
 <%- model_class = Express -%>
 
 <%= grid(@expresses_grid) do |g|
-    g.action_column select_all_buttons: true do |express|
-      !express.new_express_no.blank? && !express.route_code.blank? && (["done", "feedback"].include?express.status)
-    end 
+    g.action_column select_all_buttons: true #do |express|
+    #   !express.new_express_no.blank? && !express.route_code.blank? && (["done", "feedback"].include?express.status)
+    # end 
 
     g.column name: model_class.human_attribute_name(:express_no), attribute: 'express_no'
 

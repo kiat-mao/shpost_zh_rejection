@@ -190,4 +190,17 @@ class Express < ApplicationRecord
       Batch.where(id: batches).each{|x| x.update! status: "pending" }  
     end
   end
+
+  def self.get_done_deal_result(deal_require)
+    deal_result = ""
+    case deal_require
+    when "01"
+      deal_result = "02"
+    when "02"
+      deal_result = "04"
+    when "03"
+      deal_result = "06"
+    end
+    return deal_result
+  end
 end

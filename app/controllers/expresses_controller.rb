@@ -76,7 +76,7 @@ class ExpressesController < ApplicationController
         selected = params[:expresses][:selected]
 	       
 	      until selected.blank? do 
-	        @result += Express.where(id:selected.pop(1000))
+	        @result += Express.where.not(new_express_no: nil, route_code: nil).where(id:selected.pop(1000), status: ["done", "feedback"])
 	      end
       else
 	      flash[:alert] = "请勾选需要打印的邮件"
@@ -355,6 +355,27 @@ class ExpressesController < ApplicationController
 
     book.write xls_report  
     xls_report.string  
+  end
+
+  def set_failed
+    if !params[:expresses].blank? && !params[:expresses][:selected].blank?
+      selected = params[:expresses][:selected]
+         
+      until selected.blank? do 
+        expresses = Express.where(id:selected.pop(1000), status: "pending")
+        expresses.each do |o|
+          o.update status: "done", deal_result: Express.get_done_deal_result(o.deal_require), deal_desc: "异常", scaned_at: Time.now, operator2: current_user.id
+        end
+      end
+      flash[:notice] = "已设置成功"      
+    else
+      flash[:alert] = "请勾选邮件"
+    end   
+    
+    respond_to do |format|
+      format.html { redirect_to request.referer }
+      format.json { head :no_content }
+    end
   end
 	
 	private
