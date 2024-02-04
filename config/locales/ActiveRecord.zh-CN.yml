@@ -367,7 +367,13 @@ zh-CN:
   first_download: "OAPEM11D"
   second_download: "OAPEM12D"
 
-# 招行订单(金邦达，捷德)
+# 招行发卡
   orders_r_path: "../shpost_zh_rejection/public/orders_r/"
+  # 金邦达
   jbda_file_name: "EMS热敏_"
+  jbda_sender_name: "招行卡中心"
+  jbda_sender_postcode: "200122"
+  # 捷德
   jd_file_name: "JDSHMAIL"
+  jd_sender_name: "招商银行信用卡中心"
+  jd_sender_postcode: "200121"
