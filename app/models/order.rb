@@ -46,6 +46,9 @@ class Order < ApplicationRecord
         to_deal_file_path = File.join(file_path_r_unzip, f) 
         Order.deal_file(to_deal_file_path)
       end
+
+      file_name = File.basename(file_path_r_encrypt)
+      File.rename(file_path_r_encrypt, file_path_r_encrypt.gsub(file_name, 'do_' + file_name))
     end
   end
 
@@ -71,6 +74,9 @@ class Order < ApplicationRecord
       #解密文件路径
       to_deal_file_path = file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), '')   
       Order.deal_file(to_deal_file_path)
+
+      file_name = File.basename(file_path_r_encrypt)
+      File.rename(file_path_r_encrypt, file_path_r_encrypt.gsub(file_name, 'do_' + file_name))
     end
   end
 
@@ -86,7 +92,7 @@ class Order < ApplicationRecord
     end
         
     if !fname_starts.blank?
-      fname_start= fname_starts+fdate
+      fname_start= fname_starts#+fdate
     
       Dir.children(direct).each do |f|
         if (f.start_with? fname_start) && (f.end_with? ".pgp")
