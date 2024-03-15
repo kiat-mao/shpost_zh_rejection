@@ -139,8 +139,8 @@ class FileHelper
 
     self.sftp_download(download_dir, direct_r, I18n.t("jbda_file_name"))
 
-    start_date = Date.today
-    Order.get_jbda_orders_by_date(start_date)
+    # start_date = Date.today
+    # Order.get_jbda_orders_by_date(start_date)
   end
   
   # 取捷德订单文件
@@ -154,8 +154,8 @@ class FileHelper
 
     self.sftp_download(download_dir, direct_r, I18n.t("jd_file_name"))
 
-    start_date = Date.today
-    Order.get_jd_orders_by_date(start_date)
+    # start_date = Date.today
+    # Order.get_jd_orders_by_date(start_date)
   end
 
   def self.sftp_download(r_dir, t_dir, file_name, remove = true)
