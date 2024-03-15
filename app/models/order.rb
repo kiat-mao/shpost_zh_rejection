@@ -24,9 +24,7 @@ class Order < ApplicationRecord
   	to_deal_r_files.each do |ff|
       #加密压缩文件路径
     	file_path_r_encrypt = File.join(direct, ff)
-      if !File.exist?(file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), ''))   
-        Order.get_jbda_orders(file_path_r_encrypt)
-      end
+      Order.get_jbda_orders(file_path_r_encrypt)
     end
   end
 
@@ -61,9 +59,7 @@ class Order < ApplicationRecord
     to_deal_r_files.each do |ff|
       file_path_r_encrypt = File.join(direct, ff)
       
-      if !File.exist?(file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), ''))   
-        Order.get_jd_orders(file_path_r_encrypt)
-      end
+      Order.get_jd_orders(file_path_r_encrypt)
     end
   end
 

@@ -43,3 +43,7 @@ every :day, :at => '0:01am' do
   runner "FileHelper.to_zh_second_file"
 end
 
+every 30.minutes do 
+	runner "Order.get_jbda_orders_by_date(Date.today)"
+	runner "Order.get_jd_orders_by_date(Date.today)"
+end
