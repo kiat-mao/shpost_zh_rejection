@@ -309,12 +309,16 @@ class XydInterfaceSender < ActiveRecord::Base
 		sender["city"] = order.sender_city
 		sender["county"] = order.sender_district
 		sender["address"] = order.sender_addr
+		sender["postcode"] = order.sender_postcode
+
 		receiver["name"] = order.receiver_name
 		receiver["mobile"] = order.receiver_phone
 		receiver["prov"] = order.receiver_province
 		receiver["city"] = order.receiver_city
 		receiver["county"] = order.receiver_district
 		receiver["address"] = order.receiver_addr
+		receiver["postcode"] = order.receiver_postcode
+
 		orderNormal["sender"] = sender
 		orderNormal["receiver"] = receiver
 

@@ -114,6 +114,9 @@ class Order < ApplicationRecord
           begin
             Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: columns[2], receiver_name: columns[3], receiver_phone: columns[5], sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
           rescue Exception => e
+            error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+            puts error_msg
+            Rails.logger.error(error_msg)
             next
             raise ActiveRecord::Rollback
           end
@@ -128,7 +131,7 @@ class Order < ApplicationRecord
       return [I18n.t("jd_sender_name"), I18n.t("jd_sender_postcode"), "jd"]
     else 
       # 金邦达
-      return [I18n.t("jbda_sender_name"), I18n.t("jdba_sender_postcode"), "jbda"]
+      return [I18n.t("jbda_sender_name"), I18n.t("jbda_sender_postcode"), "jbda"]
     end
   end
 
