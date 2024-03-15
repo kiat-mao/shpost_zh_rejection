@@ -3,11 +3,11 @@
 <h1>发卡信息改址</h1>
   <div><%= render partial: '/layouts/page_size' %></div>
 </div>
-<div align='right'>
+<!-- <div align='right'>
   <%= submit_tag "无需修改",:class => 'btn btn-primary', onclick: "form1.action='set_no_modify';form1.submit();" %>
   <%= submit_tag "筛选异地邮件",:class => 'btn btn-primary', onclick: "form1.action='change_order_addr?abnormal=true';form1.submit();" %>
 </div>
-
+ -->
 
 <%= form_tag('', name: 'form1') do %>
 <%= grid(@orders_grid) do |g|

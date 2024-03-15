@@ -36,14 +36,24 @@ class OrdersController < ApplicationController
     end
   end
 
+  # # 邮件改址
+  # def change_order_addr
+  # 	@orders = @orders.accessible_by(current_ability).where(status: "waiting").where(no_modify: false)
+
+  # 	# 筛选异地邮件
+  #   if !params[:abnormal].blank? && (params[:abnormal].eql?"true")
+  #     @orders = @orders.where("(receiver_province not like (?) or ((receiver_province is ? or receiver_city is ? or receiver_district is ?) and address_status = ?) or address_status= ?) and no_modify = ?", "上海%", nil, nil, nil, "address_success", "address_failed", false)
+  #   end
+
+  #   @orders_grid = initialize_grid(@orders,
+  #        :order => 'express_no',
+  #        :order_direction => 'asc', 
+  #        :per_page => params[:page_size])
+  # end
+
   # 邮件改址
   def change_order_addr
-  	@orders = @orders.accessible_by(current_ability).where(status: "waiting").where(no_modify: false)
-
-  	# 筛选异地邮件
-    if !params[:abnormal].blank? && (params[:abnormal].eql?"true")
-      @orders = @orders.where("(receiver_province not like (?) or ((receiver_province is ? or receiver_city is ? or receiver_district is ?) and address_status = ?) or address_status= ?) and no_modify = ?", "上海%", nil, nil, nil, "address_success", "address_failed", false)
-    end
+    @orders = @orders.accessible_by(current_ability).where("receiver_province is ? or receiver_city is ? or receiver_district is ?", nil, nil, nil)
 
     @orders_grid = initialize_grid(@orders,
          :order => 'express_no',
