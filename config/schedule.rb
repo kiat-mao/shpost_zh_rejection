@@ -2,7 +2,7 @@
 #
 # It's helpful, but not entirely necessary to understand cron before proceeding.
 # http://en.wikipedia.org/wiki/Cron
-
+env :PATH, ENV['PATH']
 # Example:
 #
 set :output, "./log/cron_log.log"
@@ -44,6 +44,6 @@ every :day, :at => '0:01am' do
 end
 
 every 30.minutes do 
-	runner "Order.get_jbda_orders_by_date(Date.today)"
-	runner "Order.get_jd_orders_by_date(Date.today)"
+	runner "Order.get_jbda_orders_by_date"
+	runner "Order.get_jd_orders_by_date"
 end

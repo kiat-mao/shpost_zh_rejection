@@ -14,17 +14,23 @@ class FileHelper
     end
   end
 
-
-  #gpg解密
   def self.gpg_decrypt_file(password, file_path_r, file_path_t = nil)
-    file_path_t = file_path_r.gsub(File.extname(file_path_r), '') if file_path_t.blank?
+    #If file_path_t is balnk,then set it
+    file_path_t ||= file_path_r.gsub(File.extname(file_path_r), '')
     # 解密
-    crypto = GPGME::Crypto.new(:password => password)
-    File.open(file_path_t, "w") do |file|
-      decrypt_data = crypto.decrypt File.open(file_path_r)
-      file.write decrypt_data.to_s.force_encoding("utf-8")
-    end
+    system("gpg --no-tty -o #{file_path_t} -d #{file_path_r}")
   end
+
+  # #gpg解密
+  # def self.gpg_decrypt_file(password, file_path_r, file_path_t = nil)
+  #   file_path_t = file_path_r.gsub(File.extname(file_path_r), '') if file_path_t.blank?
+  #   # 解密
+  #   crypto = GPGME::Crypto.new(:password => password)
+  #   File.open(file_path_t, "w") do |file|
+  #     decrypt_data = crypto.decrypt(date, password: password, pinentry_mode: GPGME::PINENTRY_MODE_LOOPBACK)
+  #     file.write decrypt_data.to_s.force_encoding("utf-8")
+  #   end
+  # end
 
   # 解压RAR文件的函数
   def self.extract_rar(file_path, destination_path = nil)
