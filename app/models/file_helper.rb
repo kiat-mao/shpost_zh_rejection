@@ -3,16 +3,16 @@ class FileHelper
   
 
 	def self.sftp_upload(file_path_l, file_path_r)
-    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password], :port =>  FileHelper::FTP_CONFIG[:port]) do |sftp|
       sftp.upload!(file_path_l, file_path_r)
     end
   end
 
-  def self.sftp_download(file_path_r, file_path_l)
-    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
-      sftp.download!(file_path_r, file_path_l)
-    end
-  end
+  # def self.sftp_download(file_path_r, file_path_l)
+  #   Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password], :port =>  FileHelper::FTP_CONFIG[:port]) do |sftp|
+  #     sftp.download!(file_path_r, file_path_l)
+  #   end
+  # end
 
   def self.gpg_decrypt_file(password, file_path_r, file_path_t = nil)
     #If file_path_t is balnk,then set it
@@ -165,7 +165,7 @@ class FileHelper
   end
 
   def self.sftp_download(r_dir, t_dir, file_name, remove = true)
-    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password]) do |sftp|
+    Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password], :port =>  FileHelper::FTP_CONFIG[:port]) do |sftp|
       sftp.dir.foreach(r_dir) do |entry|
         name = entry.name.force_encoding('UTF-8')
         if name.start_with? file_name

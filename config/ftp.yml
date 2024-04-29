@@ -4,6 +4,7 @@ default: &default
 development:
   <<: *default
   ftp_ip: 10.126.41.144
+  port: 18522
   username: shzh
   password: shzh@0418
   upload_dir: fct2ap
@@ -13,6 +14,7 @@ development:
 test:
   <<: *default
   ftp_ip: 10.126.41.144
+  port: 18522
   username: shzh
   password: shzh@0418
   upload_dir: fct2ap
@@ -21,6 +23,7 @@ test:
 production:
   <<: *default
   ftp_ip: 10.126.41.144
+  port: 18522
   username: shzh
   password: shzh@0418
   upload_dir: fct2ap
