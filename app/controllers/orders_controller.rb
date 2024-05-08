@@ -19,7 +19,7 @@ class OrdersController < ApplicationController
 
   def update
     respond_to do |format|
-      if !order_params[:receiver_province].blank? && !order_params[:receiver_city].blank? && !order_params[:receiver_district].blank?
+      if !order_params[:receiver_province].blank? && !order_params[:receiver_city].blank?
       	if @order.update(order_params)
           @order.update address_status: "address_success"
           format.html { redirect_to @order, notice: I18n.t('controller.update_success_notice', model: '邮件')}
@@ -29,7 +29,7 @@ class OrdersController < ApplicationController
           format.json { render json: @order.errors, status: :unprocessable_entity }
         end
       else
-        flash[:alert] = "收件人省市区不能为空"
+        flash[:alert] = "收件人省市不能为空"
         format.html { render action: 'edit' }
         format.json { render json: @order.errors, status: :unprocessable_entity }
       end
@@ -53,7 +53,7 @@ class OrdersController < ApplicationController
 
   # 邮件改址
   def change_order_addr
-    @orders = @orders.accessible_by(current_ability).where("receiver_province is ? or receiver_city is ? or receiver_district is ?", nil, nil, nil)
+    @orders = @orders.accessible_by(current_ability).where("receiver_province is ? or receiver_city is ?", nil, nil)
 
     @orders_grid = initialize_grid(@orders,
          :order => 'express_no',
