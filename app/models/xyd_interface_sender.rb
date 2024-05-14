@@ -235,13 +235,19 @@ class XydInterfaceSender < ActiveRecord::Base
       order.receiver_city = address['cityName']
       order.receiver_district = address['countyName']
 
-      if order.receiver_province.blank? || order.receiver_city.blank? || order.receiver_district.blank?
+      if order.receiver_province.blank? || order.receiver_city.blank?
         order.address_failed!
-      else
-        order.address_success!
+				return true
       end
 
-      true
+			if order.is_a Express && order.receiver_district.blank?
+				order.address_failed!
+				return true
+			end
+
+
+			order.address_success!
+			return true
     else
       order.address_failed!
       false
