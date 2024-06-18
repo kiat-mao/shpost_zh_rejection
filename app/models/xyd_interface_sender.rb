@@ -360,6 +360,13 @@ class XydInterfaceSender < ActiveRecord::Base
 					order.uploaded!
 					return true
 				end
+			elsif (error_code=='50401')
+				if (! order_id.blank? && order_id.is_a?(Numeric))
+					order = Order.find order_id
+					order.address_failed!
+					order.waiting!
+					return true
+				end
 			end
 			return false
 		end

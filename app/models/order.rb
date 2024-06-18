@@ -108,7 +108,9 @@ class Order < ApplicationRecord
         columns = line.gsub(/\r\n?|\n/, '').split("!^?")
         ActiveRecord::Base.transaction do
           begin
-            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: columns[2], receiver_name: columns[3], receiver_phone: columns[5], sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
+            receiver_addr = columns[2].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+            receiver_name = columns[3].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: columns[5], sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
           rescue Exception => e
             error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
             puts "============= #{columns[0]}  ========="
