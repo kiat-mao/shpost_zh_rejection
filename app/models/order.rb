@@ -24,7 +24,14 @@ class Order < ApplicationRecord
   	to_deal_r_files.each do |ff|
       #加密压缩文件路径
     	file_path_r_encrypt = File.join(direct, ff)
-      Order.get_jbda_orders(file_path_r_encrypt)
+
+      begin
+        Order.get_jbda_orders(file_path_r_encrypt)
+      rescue Exception => e
+        error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+        puts error_msg
+        Rails.logger.error(error_msg)
+      end
     end
   end
 
@@ -59,7 +66,13 @@ class Order < ApplicationRecord
     to_deal_r_files.each do |ff|
       file_path_r_encrypt = File.join(direct, ff)
       
-      Order.get_jd_orders(file_path_r_encrypt)
+      begin
+        Order.get_jd_orders(file_path_r_encrypt)
+      rescue Exception => e
+        error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+        puts error_msg
+        Rails.logger.error(error_msg)
+      end
     end
   end
 

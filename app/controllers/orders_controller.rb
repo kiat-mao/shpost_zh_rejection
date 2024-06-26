@@ -53,7 +53,7 @@ class OrdersController < ApplicationController
 
   # 邮件改址
   def change_order_addr
-    @orders = @orders.accessible_by(current_ability).where("receiver_province is ? or receiver_city is ?", nil, nil)
+    @orders = @orders.accessible_by(current_ability).where("receiver_province is ? or receiver_city is ? or address_status = ?", nil, nil, Order.address_statuses[:address_failed])
 
     @orders_grid = initialize_grid(@orders,
          :order => 'express_no',
