@@ -36,14 +36,18 @@ every 30.minutes do
   runner "FileHelper.from_jd_file"
 end
 
-every :day, :at => '0:01am' do
-  runner "FileHelper.to_zh_first_file"
-  runner "FileHelper.from_zh_first_file"
-  runner "FileHelper.from_zh_second_file"
-  runner "FileHelper.to_zh_second_file"
-end
+# every :day, :at => '0:01am' do
+#   runner "FileHelper.to_zh_first_file"
+#   runner "FileHelper.from_zh_first_file"
+#   runner "FileHelper.from_zh_second_file"
+#   runner "FileHelper.to_zh_second_file"
+# end
 
 every 30.minutes do 
 	runner "Order.get_jbda_orders_by_date"
 	runner "Order.get_jd_orders_by_date"
+end
+
+every :day, :at => '0:05am' do
+  runner "Order.destroy_orders_2days_ago!"
 end

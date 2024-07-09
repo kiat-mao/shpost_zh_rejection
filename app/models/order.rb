@@ -156,5 +156,8 @@ class Order < ApplicationRecord
     end
   end
 
-
+  def self.destroy_orders_2days_ago!
+    Order.where("created_at < ?", (Date.today - 2.days)).destroy_all
+    InterfaceSender.where("created_at < ?", (Date.today - 2.days)).where(parent_class: 'Order').destroy_all
+  end
 end
