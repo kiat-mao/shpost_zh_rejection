@@ -167,15 +167,35 @@ class FileHelper
   def self.sftp_download(r_dir, t_dir, file_name, remove = true)
     Net::SFTP.start(FileHelper::FTP_CONFIG[:ftp_ip], FileHelper::FTP_CONFIG[:username], :password => FileHelper::FTP_CONFIG[:password], :port =>  FileHelper::FTP_CONFIG[:port]) do |sftp|
       sftp.dir.foreach(r_dir) do |entry|
+        
         name = entry.name.force_encoding('UTF-8')
+
+        r_file = "#{r_dir}/#{name}"
+        t_file = "#{t_dir}/#{name}"
+
         if name.start_with? file_name
-          sftp.download!("#{r_dir}/#{name}", "#{t_dir}/#{name}")
 
-          Rails.logger.info("#{Time.now} r_dir download #{name}")
+        #如果目标文件是空文件或者不存在该文件，则再取一次,最多取3次。
+          3.times do
+            if ! File.exist?(t_file) || file_size_zero?(t_file)
+              sftp.download!(r_file, t_file)
+              size = File.size(t_file)
+              Rails.logger.info("#{Time.now} r_dir download #{name}  size： #{size}")
+              # 等待2秒
+              sleep(2)
+            end
+          end
 
-          sftp.remove!("#{r_dir}/#{name}") if remove
+          if remove && File.exist?(t_file) && ! file_size_zero?(t_file)
+            sftp.remove!(r_file) 
+          end
         end
       end
     end
+  end
+
+    #写一个方法判断文件大小是否为0
+  def self.file_size_zero?(file_path)
+    File.size(file_path) == 0
   end
 end

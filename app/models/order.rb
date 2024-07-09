@@ -123,7 +123,8 @@ class Order < ApplicationRecord
           begin
             receiver_addr = columns[2].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
             receiver_name = columns[3].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
-            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: columns[5], sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
+
+            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: remove_zero(columns[5]), sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
           rescue Exception => e
             error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
             puts "============= #{columns[0]}  ========="
@@ -136,6 +137,14 @@ class Order < ApplicationRecord
       end
     end
   end
+
+  #写一个方法去掉number开头的所有0
+  def self.remove_zero(number)
+    number.gsub!(/^0*/, "")
+    number
+  end
+
+  # 获取发件人信息
 
   def self.get_senders(file_name) 
     # 捷德
