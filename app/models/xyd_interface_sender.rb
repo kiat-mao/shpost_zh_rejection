@@ -204,7 +204,7 @@ class XydInterfaceSender < ActiveRecord::Base
 
     # 判断order是否存在,是否不可修改
     begin
-			if !callback_params["address_object_id"].blank?
+			if callback_params["address_object_id"].blank?
 				#兼容老数据
 				order ||= Express.find callback_params["express_id"]
 			else
@@ -240,7 +240,7 @@ class XydInterfaceSender < ActiveRecord::Base
 				return true
       end
 
-			if order.is_a Express && order.receiver_district.blank?
+			if order.is_a?(Express) && order.receiver_district.blank?
 				order.address_failed!
 				return true
 			end
@@ -358,6 +358,13 @@ class XydInterfaceSender < ActiveRecord::Base
 					order.logistic_id = logistic_id
 					order.route_code = route_code
 					order.uploaded!
+					return true
+				end
+			elsif (error_code=='50401')
+				if (! order_id.blank? && order_id.is_a?(Numeric))
+					order = Order.find order_id
+					order.address_failed!
+					order.waiting!
 					return true
 				end
 			end

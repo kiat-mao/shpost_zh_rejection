@@ -24,7 +24,14 @@ class Order < ApplicationRecord
   	to_deal_r_files.each do |ff|
       #加密压缩文件路径
     	file_path_r_encrypt = File.join(direct, ff)
-      Order.get_jbda_orders(file_path_r_encrypt)
+
+      begin
+        Order.get_jbda_orders(file_path_r_encrypt)
+      rescue Exception => e
+        error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+        puts error_msg
+        Rails.logger.error(error_msg)
+      end
     end
   end
 
@@ -59,7 +66,13 @@ class Order < ApplicationRecord
     to_deal_r_files.each do |ff|
       file_path_r_encrypt = File.join(direct, ff)
       
-      Order.get_jd_orders(file_path_r_encrypt)
+      begin
+        Order.get_jd_orders(file_path_r_encrypt)
+      rescue Exception => e
+        error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+        puts error_msg
+        Rails.logger.error(error_msg)
+      end
     end
   end
 
@@ -108,7 +121,10 @@ class Order < ApplicationRecord
         columns = line.gsub(/\r\n?|\n/, '').split("!^?")
         ActiveRecord::Base.transaction do
           begin
-            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: columns[2], receiver_name: columns[3], receiver_phone: columns[5], sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
+            receiver_addr = columns[2].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+            receiver_name = columns[3].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+
+            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: remove_zero(columns[5]), sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
           rescue Exception => e
             error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
             puts "============= #{columns[0]}  ========="
@@ -122,6 +138,14 @@ class Order < ApplicationRecord
     end
   end
 
+  #写一个方法去掉number开头的所有0
+  def self.remove_zero(number)
+    number.gsub!(/^0*/, "")
+    number
+  end
+
+  # 获取发件人信息
+
   def self.get_senders(file_name) 
     # 捷德
     if file_name.start_with?(I18n.t("jd_file_name"))
@@ -132,5 +156,10 @@ class Order < ApplicationRecord
     end
   end
 
-
+  def self.destroy_orders_2days_ago!
+    ActiveRecord::Base.transaction do
+      Order.where("created_at < ?", (Date.today - 2.days)).destroy_all
+      InterfaceSender.where("created_at < ?", (Date.today - 2.days)).where(parent_class: 'Order').destroy_all
+    end
+  end
 end

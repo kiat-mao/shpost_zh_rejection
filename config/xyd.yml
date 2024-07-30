@@ -54,10 +54,10 @@ production:
   order_create_url: http://10.126.25.138:7001/xyd_server/OrderCreateServlet
   oc_system_name: syhs2022
   oc_pwd: M3Q5NGREcjB0NE9zOCk5
-  ecCompanyId: SHYIYAO
-  parentId: b2aaZH1Cnjf8D
+  ecCompanyId: 
+  parentId: 
   logistics_provider: B
-  ecommerce_no: SHYIYAO
+  ecommerce_no: SHKAOSHIYUAN
   inner_channel: "0"
   sender_no: "1030001504969"
   # sy_sender_no: "1030001771000"
