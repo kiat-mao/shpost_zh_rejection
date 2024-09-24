@@ -46,12 +46,12 @@ class Ability
         can [:read, :up_download_export], UpDownload
 
         can :manage, Express
-        cannot [:change_express_addr, :set_failed], Express
+        # cannot [:change_express_addr, :set_failed], Express
 
         can :read, Batch
 
         can :manage, Order
-        cannot :change_order_addr, Order
+        # cannot :change_order_addr, Order
     end
 
     
