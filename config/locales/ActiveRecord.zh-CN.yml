@@ -371,6 +371,7 @@ zh-CN:
   orders_r_path: "../shpost_zh_rejection/public/orders_r/"
   # 金邦达
   jbda_file_name: "EMS热敏_"
+  jbda_sub_file_name: "JBDSMAIL"
   jbda_sender_name: "招行卡中心"
   jbda_sender_postcode: "200122"
   # 捷德

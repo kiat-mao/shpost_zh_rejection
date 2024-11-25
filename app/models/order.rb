@@ -95,7 +95,7 @@ class Order < ApplicationRecord
   def self.get_jbda_repost_orders_by_date(start_date = nil)
     direct = I18n.t("orders_r_path")
     
-  	to_deal_r_files = Order.get_to_deal_files(start_date, "jbda", direct)   
+  	to_deal_r_files = Order.get_to_deal_files(start_date, "jbda_repost", direct)   
   	
   	to_deal_r_files.each do |ff|
       #加密压缩文件路径
@@ -134,7 +134,7 @@ class Order < ApplicationRecord
     elsif type.eql? "jd"
       fname_starts = I18n.t("jd_file_name")
     elsif type.eql? "jbda_repost"
-      fname_start = I18n.t("jbda_repost_file_name")
+      fname_starts = I18n.t("jbda_repost_file_name")
     end
         
     if !fname_starts.blank?
@@ -187,7 +187,7 @@ class Order < ApplicationRecord
     # 捷德
     if file_name.start_with?(I18n.t("jd_file_name"))
       return [I18n.t("jd_sender_name"), I18n.t("jd_sender_postcode"), "jd"]
-    elsif file_name.start_with?(I18n.t("jd_fjbda_file_namele_name"))
+    elsif file_name.start_with?(I18n.t("jbda_file_name"))
       # 金邦达
       return [I18n.t("jbda_sender_name"), I18n.t("jbda_sender_postcode"), "jbda"]
     elsif file_name.start_with?(I18n.t("jbda_repost_file_name"))
