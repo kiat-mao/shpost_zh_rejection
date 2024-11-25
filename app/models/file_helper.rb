@@ -141,9 +141,17 @@ class FileHelper
       Dir.mkdir(direct_r)          
     end
 
+    #POST原发卡业务
     download_dir = "/#{FileHelper::FTP_CONFIG[:jbda_dir]}"
 
     self.sftp_download(download_dir, direct_r, I18n.t("jbda_file_name"))
+
+    #REPOST退卡重寄业务
+    download_dir = "/#{FileHelper::FTP_CONFIG[:jbda_repost_dir]}"
+
+    self.sftp_download(download_dir, direct_r, I18n.t("jbda_repost_file_name"))
+
+    #REPOST业务
 
     # start_date = Date.today
     # Order.get_jbda_orders_by_date(start_date)

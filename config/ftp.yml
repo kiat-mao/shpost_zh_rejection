@@ -29,5 +29,6 @@ production:
   password: '@Flzx3qc'
   upload_dir: fct2ap
   download_dir: ap2fct
-  jbda_dir: JDBSupload
+  jbda_dir: JDBSupload/POST
+  jbda_repost_dir: JDBSupload/REPOST
   jd_dir: JDSHupload

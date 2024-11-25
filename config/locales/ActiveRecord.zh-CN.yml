@@ -377,3 +377,7 @@ zh-CN:
   jd_file_name: "JDSHMAIL"
   jd_sender_name: "招商银行信用卡中心"
   jd_sender_postcode: "200121"
+  # 金邦达退件重寄
+  jbda_repost_file_name: "OAPSJTJCY"
+  jbda_repost_sender_name: "金邦达招行中卡心"
+  jbda_repost_sender_postcode: "200100"

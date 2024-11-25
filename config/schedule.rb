@@ -46,6 +46,7 @@ end
 every 30.minutes do 
 	runner "Order.get_jbda_orders_by_date"
 	runner "Order.get_jd_orders_by_date"
+  runner "Order.get_jbda_repost_orders_by_date"
 end
 
 every :day, :at => '0:05am' do

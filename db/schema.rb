@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_15_061104) do
+ActiveRecord::Schema.define(version: 2024_02_04_014816) do
 
   create_table "batches", force: :cascade do |t|
     t.string "name"
@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(version: 2023_12_15_061104) do
     t.boolean "no_modify", default: false
     t.string "logistic_id"
     t.string "route_code"
+    t.string "source"
+    t.string "sender_postcode"
     t.index ["express_no"], name: "index_orders_on_express_no"
   end
 

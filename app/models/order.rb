@@ -35,6 +35,8 @@ class Order < ApplicationRecord
     end
   end
 
+
+
   def self.get_jbda_orders(file_path_r_encrypt)
     ActiveRecord::Base.transaction do
       # 解密文件
@@ -89,15 +91,50 @@ class Order < ApplicationRecord
     end
   end
 
+  # 金邦达重寄
+  def self.get_jbda_repost_orders_by_date(start_date = nil)
+    direct = I18n.t("orders_r_path")
+    
+  	to_deal_r_files = Order.get_to_deal_files(start_date, "jbda", direct)   
+  	
+  	to_deal_r_files.each do |ff|
+      #加密压缩文件路径
+    	file_path_r_encrypt = File.join(direct, ff)
+
+      begin
+        Order.get_jbda_repost_orders(file_path_r_encrypt)
+      rescue Exception => e
+        error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+        puts error_msg
+        Rails.logger.error(error_msg)
+      end
+    end
+  end
+
+  def self.get_jbda_repost_orders(file_path_r_encrypt)
+    ActiveRecord::Base.transaction do
+      # 解密文件
+      FileHelper.gpg_decrypt_file("12345678", file_path_r_encrypt, nil)
+      #解密文件路径
+      to_deal_file_path = file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), '')   
+      Order.deal_file(to_deal_file_path)
+
+      file_name = File.basename(file_path_r_encrypt)
+      File.rename(file_path_r_encrypt, file_path_r_encrypt.gsub(file_name, 'do_' + file_name))
+    end
+  end
+
   # 获取需解密文件
   def self.get_to_deal_files(start_date, type, direct)
     to_deal_r_files = []   
     # fdate = start_date.strftime('%Y%m%d')
 
-    if type.eql?"jbda"
+    if type.eql? "jbda"
       fname_starts = I18n.t("jbda_file_name")
-    elsif type.eql?"jd"
+    elsif type.eql? "jd"
       fname_starts = I18n.t("jd_file_name")
+    elsif type.eql? "jbda_repost"
+      fname_start = I18n.t("jbda_repost_file_name")
     end
         
     if !fname_starts.blank?
@@ -150,9 +187,12 @@ class Order < ApplicationRecord
     # 捷德
     if file_name.start_with?(I18n.t("jd_file_name"))
       return [I18n.t("jd_sender_name"), I18n.t("jd_sender_postcode"), "jd"]
-    else 
+    elsif file_name.start_with?(I18n.t("jd_fjbda_file_namele_name"))
       # 金邦达
       return [I18n.t("jbda_sender_name"), I18n.t("jbda_sender_postcode"), "jbda"]
+    elsif file_name.start_with?(I18n.t("jbda_repost_file_name"))
+      # 金邦达
+      return [I18n.t("jbda_repost_sender_name"), I18n.t("jbda_repost_sender_postcode"), "jbda_repost"]
     end
   end
 
