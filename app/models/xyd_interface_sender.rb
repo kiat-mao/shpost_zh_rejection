@@ -214,6 +214,9 @@ class XydInterfaceSender < ActiveRecord::Base
       Rails.logger.error e.message
       return false
     ensure
+			if order.address_success?
+				return true
+			end
       if order.no_modify
         order.address_success!
         return true
