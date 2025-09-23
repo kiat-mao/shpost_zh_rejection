@@ -181,7 +181,7 @@ class FileHelper
         r_file = "#{r_dir}/#{name}"
         t_file = "#{t_dir}/#{name}"
 
-        if name.start_with? file_name
+        if self.is_file(name, file_name)
 
         #如果目标文件是空文件或者不存在该文件，则再取一次,最多取3次。
           3.times do
@@ -205,5 +205,36 @@ class FileHelper
     #写一个方法判断文件大小是否为0
   def self.file_size_zero?(file_path)
     File.size(file_path) == 0
+  end
+
+  # 取金邦达银行订单文件
+  def self.from_jbda_bank_file
+    direct_bank = I18n.t("orders_bank_path")
+    if !File.exist?(direct_bank)
+      Dir.mkdir(direct_bank)          
+    end
+
+    download_dir = "/#{FileHelper::FTP_CONFIG[:jbda_bank_dir]}"
+    file_name_start = ["中信","浦发","平安","光大","兴业","民生"]
+
+    self.sftp_download(download_dir, direct_bank, file_name_start)
+  end
+
+  def self.is_file(name, file_name)
+    result = false
+
+    if file_name.is_a?Array
+      file_name.each do |f|
+        if name.start_with? f
+          result = true
+          return result
+        end
+      end
+    elsif file_name.is_a?String
+      if name.start_with? file_name
+        result = true
+      end
+    end
+    return result
   end
 end

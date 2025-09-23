@@ -52,3 +52,11 @@ end
 every :day, :at => '0:05am' do
   runner "Order.destroy_orders_2days_ago!"
 end
+
+every 15.minutes do 
+  runner "FileHelper.from_jbda_bank_file"
+end
+
+every 15.minutes do 
+  runner "Order.get_bank_orders"
+end

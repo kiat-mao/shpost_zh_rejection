@@ -161,7 +161,7 @@ class Order < ApplicationRecord
             receiver_addr = columns[2].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
             receiver_name = columns[3].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
 
-            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: remove_zero(columns[5]), sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2]
+            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: remove_zero(columns[5]), sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2], category: I18n.t("order_category_factory") 
           rescue Exception => e
             error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
             puts "============= #{columns[0]}  ========="
@@ -202,4 +202,127 @@ class Order < ApplicationRecord
       InterfaceSender.where("created_at < ?", (Date.today - 2.days)).where(parent_class: 'Order').destroy_all
     end
   end
+
+  # 商企金邦达银行订单
+  def self.get_bank_orders 
+    direct = I18n.t("orders_bank_path")
+    
+    if File.exist?(direct)
+      to_deal_files = Order.get_to_deal_bank_files(direct)   
+      
+      to_deal_files.each do |ff|
+        file_path_r_encrypt = File.join(direct, ff)
+
+        begin
+          Order.get_borders(file_path_r_encrypt)
+        rescue Exception => e
+          error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+          puts error_msg
+          Rails.logger.error(error_msg)
+        end
+      end
+    end
+  end
+
+  def self.get_to_deal_bank_files(direct)
+    to_deal_files = []   
+
+    Dir.children(direct).each do |f|
+      if (!f.start_with? "do_") && (f.end_with? ".pgp") && (f.include?"银行")
+        to_deal_files << f
+      end
+    end
+
+    return to_deal_files
+  end
+
+  def self.get_borders(file_path_r_encrypt)
+    ActiveRecord::Base.transaction do
+      # 解密文件
+      FileHelper.gpg_decrypt_file("12345678", file_path_r_encrypt, nil)
+      #解密文件路径
+      file_path = file_path_r_encrypt.gsub(File.extname(file_path_r_encrypt), '')  
+      
+      Order.deal_bank_file(file_path)
+      
+      file_name = File.basename(file_path_r_encrypt)
+      File.rename(file_path_r_encrypt, file_path_r_encrypt.gsub(file_name, 'do_' + file_name))
+    end
+  end
+
+  def self.deal_bank_file(file_path)
+    instance=nil
+    rowarr = [] 
+    current_line = 0
+
+    if file_path.try :end_with?, '.xlsx'
+      instance= Roo::Excelx.new(file_path)
+    elsif file_path.try :end_with?, '.xls'
+      instance= Roo::Excel.new(file_path)
+    else
+      return
+    end
+    instance.default_sheet = instance.sheets.first
+    title_row = instance.row(2)
+
+    mailNum_index = title_row.index("mailNum")
+    bankName_index = title_row.index("bankName")
+    sname_index = title_row.index("sname")
+    spostCode_index = title_row.index("spostCode")
+    smobile_index = title_row.index("smobile")
+    sprov_index = title_row.index("sprov")
+    scity_index = title_row.index("scity")
+    scounty_index = title_row.index("scounty")
+    saddress_index = title_row.index("saddress")
+    rname_index = title_row.index("rname")
+    rpostCode_index = title_row.index("rpostCode")
+    rphone_index = title_row.index("rphone")
+    rprov_index = title_row.index("rprov")
+    rcity_index = title_row.index("rcity")
+    rcounty_index = title_row.index("rcounty")
+    raddress_index = title_row.index("raddress")
+    
+    4.upto(instance.last_row) do |line|
+      ActiveRecord::Base.transaction do
+        begin
+          current_line = line
+          rowarr = instance.row(line)
+
+          express_no = rowarr[mailNum_index].blank? ? "" : to_string(rowarr[mailNum_index])
+          bank_name = rowarr[bankName_index].blank? ? "" : to_string(rowarr[bankName_index])
+          sender_name = rowarr[sname_index].blank? ? "" : to_string(rowarr[sname_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          sender_postcode = rowarr[spostCode_index].blank? ? "" : to_string(rowarr[spostCode_index])
+          sender_phone = rowarr[smobile_index].blank? ? "" : to_string(rowarr[smobile_index])
+          sender_province = rowarr[sprov_index].blank? ? "" : to_string(rowarr[sprov_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          sender_city = rowarr[scity_index].blank? ? "" : to_string(rowarr[scity_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          sender_district = rowarr[scounty_index].blank? ? "" : to_string(rowarr[scounty_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          sender_addr = rowarr[saddress_index].blank? ? "" : to_string(rowarr[saddress_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          receiver_name = rowarr[rname_index].blank? ? "" : to_string(rowarr[rname_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          receiver_postcode = rowarr[rpostCode_index].blank? ? "" : to_string(rowarr[rpostCode_index])
+          receiver_phone = rowarr[rphone_index].blank? ? "" : to_string(rowarr[rphone_index])
+          receiver_province = rowarr[rprov_index].blank? ? "" : to_string(rowarr[rprov_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          receiver_city = rowarr[rcity_index].blank? ? "" : to_string(rowarr[rcity_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          receiver_district = rowarr[rcounty_index].blank? ? "" : to_string(rowarr[rcounty_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+          receiver_addr = rowarr[raddress_index].blank? ? "" : to_string(rowarr[raddress_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
+
+          Order.create! express_no: express_no, bank_name: bank_name, sender_name: sender_name, sender_postcode: sender_postcode, sender_phone: sender_phone, sender_province: sender_province, sender_city: sender_city, sender_district: sender_district, sender_addr: sender_addr, receiver_name: receiver_name, receiver_postcode: receiver_postcode, receiver_phone: receiver_phone, receiver_province: receiver_province, receiver_city: receiver_city, receiver_district: receiver_district, receiver_addr: receiver_addr, status: "waiting", address_status: "address_waiting", category: I18n.t("order_category_bank")
+        rescue Exception => e
+          error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
+          puts "============= #{express_no}  ========="
+          puts error_msg
+          Rails.logger.error(error_msg)
+          next
+          raise ActiveRecord::Rollback
+        end
+      end
+    end 
+  end
+
+  def self.to_string(text)
+    if text.is_a? Float
+      return text.to_s.split('.0')[0]
+    else
+      return text
+    end
+  end 
 end

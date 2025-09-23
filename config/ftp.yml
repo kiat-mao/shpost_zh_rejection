@@ -32,3 +32,4 @@ production:
   jbda_dir: JDBSupload/POST
   jbda_repost_dir: JDBSupload/REPOST
   jd_dir: JDSHupload
+  jbda_bank_dir: SQJBD
