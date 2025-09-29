@@ -228,7 +228,7 @@ class Order < ApplicationRecord
     to_deal_files = []   
 
     Dir.children(direct).each do |f|
-      if (!f.start_with? "do_") && (f.end_with? ".pgp") && (f.include?"银行")
+      if (!f.start_with? "do_") && (f.end_with? ".pgp") && (FileHelper.is_file(f, ["中信","浦发","平安","光大","兴业","民生"]))
         to_deal_files << f
       end
     end

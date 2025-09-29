@@ -9,8 +9,10 @@ development:
   password: shzh@0418
   upload_dir: fct2ap
   download_dir: ap2fct
-  jbda_dir: JDBSupload
+  jbda_dir: JDBSupload/POST
+  jbda_repost_dir: JDBSupload/REPOST
   jd_dir: JDSHupload
+  jbda_bank_dir: JDBSupload/SQJBD
 test:
   <<: *default
   ftp_ip: 10.126.41.144
@@ -19,8 +21,10 @@ test:
   password: shzh@0418
   upload_dir: fct2ap
   download_dir: ap2fct
-  jbda_dir: JDBSupload
+  jbda_dir: JDBSupload/POST
+  jbda_repost_dir: JDBSupload/REPOST
   jd_dir: JDSHupload
+  jbda_bank_dir: JDBSupload/SQJBD
 production:
   <<: *default
   ftp_ip: 10.126.41.144
@@ -32,4 +36,4 @@ production:
   jbda_dir: JDBSupload/POST
   jbda_repost_dir: JDBSupload/REPOST
   jd_dir: JDSHupload
-  jbda_bank_dir: SQJBD
+  jbda_bank_dir: JDBSupload/SQJBD

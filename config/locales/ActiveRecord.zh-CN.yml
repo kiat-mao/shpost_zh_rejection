@@ -384,6 +384,6 @@ zh-CN:
   jbda_repost_sender_postcode: "200100"
 
   # 商企金邦达银行订单
-  orders_bank_path: "../shpost_zh_rejection/public/orders_bank/"
+  orders_bank_path: "../shpost_zh_rejection/public/orders_bank"
   order_category_bank: "bank"
   order_category_factory: "factory"
