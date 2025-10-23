@@ -5,7 +5,9 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-User.where(username: 'superadmin').first_or_create(username: 'superadmin', password: 'pwd12345', name: 'superadmin', role: 'superadmin')
-unit = Unit.where(no: '10000000').first_or_create(name: '招行', short_name: '招行')
-User.where(username: 'unitadmin').first_or_create(username: 'unitadmin', password: 'unitadmin12345', name: '机构管理员', role: 'unitadmin', unit_id: unit.id, email: 'email@email.com')
-User.where(username: 'user').first_or_create(username: 'user', password: 'user12345', name: '普通用户', role: 'user', unit_id: unit.id)
+# User.where(username: 'superadmin').first_or_create(username: 'superadmin', password: 'pwd12345', name: 'superadmin', role: 'superadmin')
+# unit = Unit.where(no: '10000000').first_or_create(name: '招行', short_name: '招行')
+# User.where(username: 'unitadmin').first_or_create(username: 'unitadmin', password: 'unitadmin12345', name: '机构管理员', role: 'unitadmin', unit_id: unit.id, email: 'email@email.com')
+# User.where(username: 'user').first_or_create(username: 'user', password: 'user12345', name: '普通用户', role: 'user', unit_id: unit.id)
+Order.update_all unit_id:Unit.find_by(name: '招行').id, category: "factory"
+Unit.where(no: '10000001').first_or_create(name: '商企', short_name: '商企')

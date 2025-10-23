@@ -3,7 +3,7 @@ class OrdersController < ApplicationController
   protect_from_forgery :except => [:change_order_addr]
 
   def index
-    @orders = Order.all
+    @orders = Order.accessible_by(current_ability).all
     
     @orders_grid = initialize_grid(@orders,
          :order => 'created_at',

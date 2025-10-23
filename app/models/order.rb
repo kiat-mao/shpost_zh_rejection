@@ -161,7 +161,7 @@ class Order < ApplicationRecord
             receiver_addr = columns[2].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
             receiver_name = columns[3].encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
 
-            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: remove_zero(columns[5]), sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2], category: I18n.t("order_category_factory") 
+            Order.create! express_no: columns[0], receiver_postcode: columns[1], receiver_addr: receiver_addr, receiver_name: receiver_name, receiver_phone: remove_zero(columns[5]), sender_province: "上海", sender_city: "上海市", sender_district: "浦东新区", sender_addr: "上海邮政信箱120-058", sender_name: senders[0], sender_phone: "4008205555", sender_postcode: senders[1], status: "waiting", address_status: "address_waiting", source: senders[2], category: I18n.t("order_category_factory"), unit_id: I18n.t("orders_zh_unit_id")
           rescue Exception => e
             error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
             puts "============= #{columns[0]}  ========="
@@ -228,7 +228,7 @@ class Order < ApplicationRecord
     to_deal_files = []   
 
     Dir.children(direct).each do |f|
-      if (!f.start_with? "do_") && (f.end_with? ".pgp") && (FileHelper.is_file(f, ["中信","浦发","平安","光大","兴业","民生"]))
+      if (!f.start_with? "do_") && (f.end_with? ".pgp") && (FileHelper.is_file(f, I18n.t("bank_names")))
         to_deal_files << f
       end
     end
@@ -262,11 +262,12 @@ class Order < ApplicationRecord
     else
       return
     end
+    file_name = File.basename(file_path)
     instance.default_sheet = instance.sheets.first
     title_row = instance.row(2)
 
     mailNum_index = title_row.index("mailNum")
-    bankName_index = title_row.index("bankName")
+    # bankName_index = title_row.index("bankName")
     sname_index = title_row.index("sname")
     spostCode_index = title_row.index("spostCode")
     smobile_index = title_row.index("smobile")
@@ -289,7 +290,8 @@ class Order < ApplicationRecord
           rowarr = instance.row(line)
 
           express_no = rowarr[mailNum_index].blank? ? "" : to_string(rowarr[mailNum_index])
-          bank_name = rowarr[bankName_index].blank? ? "" : to_string(rowarr[bankName_index])
+          # bank_name = rowarr[bankName_index].blank? ? "" : to_string(rowarr[bankName_index])
+          bank_name = Order.get_bank_name(file_name)
           sender_name = rowarr[sname_index].blank? ? "" : to_string(rowarr[sname_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
           sender_postcode = rowarr[spostCode_index].blank? ? "" : to_string(rowarr[spostCode_index])
           sender_phone = rowarr[smobile_index].blank? ? "" : to_string(rowarr[smobile_index])
@@ -305,7 +307,7 @@ class Order < ApplicationRecord
           receiver_district = rowarr[rcounty_index].blank? ? "" : to_string(rowarr[rcounty_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
           receiver_addr = rowarr[raddress_index].blank? ? "" : to_string(rowarr[raddress_index]).encode('GBK', invaild: :replace, replace: '').encode('UTF-8')
 
-          Order.create! express_no: express_no, bank_name: bank_name, sender_name: sender_name, sender_postcode: sender_postcode, sender_phone: sender_phone, sender_province: sender_province, sender_city: sender_city, sender_district: sender_district, sender_addr: sender_addr, receiver_name: receiver_name, receiver_postcode: receiver_postcode, receiver_phone: receiver_phone, receiver_province: receiver_province, receiver_city: receiver_city, receiver_district: receiver_district, receiver_addr: receiver_addr, status: "waiting", address_status: "address_waiting", category: I18n.t("order_category_bank")
+          Order.create! express_no: express_no, bank_name: bank_name, sender_name: sender_name, sender_postcode: sender_postcode, sender_phone: sender_phone, sender_province: sender_province, sender_city: sender_city, sender_district: sender_district, sender_addr: sender_addr, receiver_name: receiver_name, receiver_postcode: receiver_postcode, receiver_phone: receiver_phone, receiver_province: receiver_province, receiver_city: receiver_city, receiver_district: receiver_district, receiver_addr: receiver_addr, status: "waiting", address_status: "address_waiting", category: I18n.t("order_category_bank"), unit_id: I18n.t("orders_sq_unit_id")
         rescue Exception => e
           error_msg = "#{e.class.name} #{e.message} \n#{e.backtrace.join("\n")}"
           puts "============= #{express_no}  ========="
@@ -325,4 +327,16 @@ class Order < ApplicationRecord
       return text
     end
   end 
+
+  def self.get_bank_name(file_name)
+    bank_name = ""
+
+    I18n.t("bank_names").each do |n|
+      if file_name.include?n
+        bank_name = n
+        break
+      end
+    end
+    return bank_name
+  end
 end

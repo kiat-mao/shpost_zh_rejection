@@ -215,7 +215,7 @@ class FileHelper
     end
 
     download_dir = "/#{FileHelper::FTP_CONFIG[:jbda_bank_dir]}"
-    file_name_start = ["中信","浦发","平安","光大","兴业","民生"]
+    file_name_start = I18n.t("bank_names")
 
     self.sftp_download(download_dir, direct_bank, file_name_start)
   end
@@ -225,7 +225,7 @@ class FileHelper
 
     if file_name.is_a?Array
       file_name.each do |f|
-        if name.start_with? f
+        if name.include? f
           result = true
           return result
         end
