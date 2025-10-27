@@ -37,7 +37,7 @@ class Ability
 
         can :manage, Batch
 
-        can :manage, Order
+        can :manage, Order, unit_id: user.unit_id
     else
         can :update, User, id: user.id
         can :read, UserLog, user: {id: user.id}
@@ -50,7 +50,7 @@ class Ability
 
         can :read, Batch
 
-        can :manage, Order
+        can :manage, Order, unit_id: user.unit_id
         # cannot :change_order_addr, Order
     end
 

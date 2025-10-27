@@ -228,7 +228,7 @@ class Order < ApplicationRecord
     to_deal_files = []   
 
     Dir.children(direct).each do |f|
-      if (!f.start_with? "do_") && (f.end_with? ".pgp") && (FileHelper.is_file(f, I18n.t("bank_names")))
+      if (!f.start_with? "do_") && ((f.end_with? ".pgp") || (f.end_with? ".PGP")) && (FileHelper.is_file(f, I18n.t("bank_names")))
         to_deal_files << f
       end
     end
