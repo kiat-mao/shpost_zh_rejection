@@ -187,7 +187,7 @@ class Order < ApplicationRecord
     # 捷德
     if file_name.start_with?(I18n.t("jd_file_name"))
       return [I18n.t("jd_sender_name"), I18n.t("jd_sender_postcode"), "jd"]
-    elsif file_name.start_with?(I18n.t("jbda_file_name"))
+    elsif file_name.start_with?(I18n.t("jbda_sub_file_name"))
       # 金邦达
       return [I18n.t("jbda_sender_name"), I18n.t("jbda_sender_postcode"), "jbda"]
     elsif file_name.start_with?(I18n.t("jbda_repost_file_name"))
@@ -228,7 +228,7 @@ class Order < ApplicationRecord
     to_deal_files = []   
 
     Dir.children(direct).each do |f|
-      if (!f.start_with? "do_") && ((f.end_with? ".pgp") || (f.end_with? ".PGP")) && (FileHelper.is_file(f, I18n.t("bank_names")))
+      if (!f.start_with? "do_") && (FileHelper.is_file(f, I18n.t("bank_names")))
         to_deal_files << f
       end
     end

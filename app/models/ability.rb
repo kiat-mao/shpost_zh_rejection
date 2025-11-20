@@ -24,13 +24,13 @@ class Ability
 
         can :read, UserLog, user: {unit_id: user.unit_id}
 
-        can :read, User, role: 'unitadmin'
-        can :manage, User, role: 'user'
+        can :read, User, role: 'unitadmin', unit_id: user.unit.id
+        can :manage, User, role: 'user', unit_id: user.unit.id
 
         cannot [:create, :destroy, :update], User, role: ['unitadmin', 'superadmin']
         
         can :update, User, id: user.id
-
+        can :role, :user
         can :manage, UpDownload
 
         can :manage, Express

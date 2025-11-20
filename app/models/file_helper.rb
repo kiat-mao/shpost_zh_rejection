@@ -225,7 +225,7 @@ class FileHelper
 
     if file_name.is_a?Array
       file_name.each do |f|
-        if name.include? f
+        if name.include? f && ((name.end_with? ".pgp") || (name.end_with? ".PGP"))
           result = true
           return result
         end
