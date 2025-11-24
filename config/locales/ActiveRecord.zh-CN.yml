@@ -388,5 +388,12 @@ zh-CN:
   order_category_bank: "bank"
   order_category_factory: "factory"
   bank_names: ["中信","浦发","平安","光大","兴业","民生"]
+  bank_sender_nos: 
+    中信: "1030001617526"
+    浦发: "1100071255541"
+    平安: "1030002180195"
+    光大: "1030001603363"
+    兴业: "1100119537334"
+    民生: "1100119537334"
   orders_zh_unit_id: 1
   orders_sq_unit_id: 2
