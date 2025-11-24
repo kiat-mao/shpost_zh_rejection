@@ -303,11 +303,20 @@ class XydInterfaceSender < ActiveRecord::Base
 
 		orderNormal["weight"] = "70"
 
-
-		if !xydConfig[:sender_no].nil?
-			orderNormal["sender_no"] = xydConfig[:sender_no]
-			orderNormal["sender_type"] = '1'
+		if order.category == I18n.t('order_category_bank')
+			#根据order.bank_name去这ActiveRecord.zh-CN.yml里的bank_sender_nos取对应的sender_no
+			bank_sender_nos = I18n.t('bank_sender_nos')
+			if ! order.bank_name.blank? && bank_sender_nos.key?(order.bank_name.to_sym)
+				orderNormal["sender_no"] = bank_sender_nos[order.bank_name.to_sym]
+				orderNormal["sender_type"] = '1'
+			end
+		else
+			if !xydConfig[:sender_no].nil?
+				orderNormal["sender_no"] = xydConfig[:sender_no]
+				orderNormal["sender_type"] = '1'
+			end
 		end
+
 		orderNormal["base_product_no"] = xydConfig[:base_product_no_1]
 		# end
 		sender = {}
